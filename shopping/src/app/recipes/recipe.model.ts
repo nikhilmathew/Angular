@@ -7,5 +7,6 @@ export class Recipe {
         this.name= name;
         this.desciption = description;
         this.imagePath = imagePath;
+        
     }
 }
