@@ -1,0 +1,10 @@
+<p>
+  comp works!
+</p>
+<input type="text" class="form-control" (input)="onUpdateServerName($event)" />
+<input type="text" class="form-control" [(ngModel)]="serverName" />
+<button class="btn btn-primary" [disabled]="!allowNewServer" (click)="onCreateServer()">Server Call</button>
+<p>{{ serverCreationStatus}}</p>
+<p *ngIf="serverCreated" > server was created , server name is {{ serverName }}</p>
+
+<!--<p>{{ serverName}}</p>-->

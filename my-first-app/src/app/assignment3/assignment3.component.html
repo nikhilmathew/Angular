@@ -1,0 +1,10 @@
+<button class="btn btn-primary" (click)="toggleParagraph()"> Display Details</button>
+
+<p [ngStyle]="{'display' : paragraphVisibility}">
+  this is a random paragraph filled with bullshit password is  {{ password }} 
+</p>
+<div *ngFor="let logItem of log; let i = index"
+[ngStyle]="{'background-color': i>=5 ? 'blue':'transparent'}"
+[ngClass]="{'white-text': i >=5}">
+  {{logItem}}  {{i}}
+</div>
