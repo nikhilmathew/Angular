@@ -9,9 +9,9 @@ import { Recipe } from '../recipe.model'
 export class RecipeListComponent implements OnInit {
   @Output() recipeWasSelected = new EventEmitter<Recipe>();
   recipes: Recipe[] = [
-    new Recipe('A test recipe', 'bla bla bla', 'https://i0.wp.com/files.hungryforever.com/wp-content/uploads/2016/10/18160841/best-chole-bhature-in-mumbai.jpg?fit=1600%2C993'),
-    new Recipe('ANother Test Recipe', 'bla bla bla', 'https://i0.wp.com/files.hungryforever.com/wp-content/uploads/2016/10/18160841/best-chole-bhature-in-mumbai.jpg?fit=1600%2C993'),
-    new Recipe('A test recipe', 'bla bla bla', 'https://i0.wp.com/files.hungryforever.com/wp-content/uploads/2016/10/18160841/best-chole-bhature-in-mumbai.jpg?fit=1600%2C993')
+    new Recipe('Chole Bhature', 'bla bla bla', 'https://i0.wp.com/files.hungryforever.com/wp-content/uploads/2016/10/18160841/best-chole-bhature-in-mumbai.jpg?fit=1600%2C993'),
+    new Recipe('Tiramisu', 'bla bla bla', 'https://i.ytimg.com/vi/x5E70W40KNI/maxresdefault.jpg'),
+    new Recipe('Belgium Waffles', 'bla bla bla', 'http://cdn.pcwallart.com/images/belgian-waffles-with-ice-cream-wallpaper-4.jpg')
   ]
   constructor() { }
 
