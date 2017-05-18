@@ -18,7 +18,6 @@
             <input type="text" name="mobile" id="mobile" [(ngModel)]="mobile" class="form-control">
           </div>
           <button class="btn btn-primary" type="submit">Submit</button>
-          <div class="g-signin2" data-onsuccess="onSignIn"></div>
 
 
         </form>
@@ -28,19 +27,33 @@
   </div>
 </div>
 
-<section class="google-login-page">
-  <button *ngIf="!token" id="google-login-button" class="btn btn-primary" (click)="googleAuthenticate()">Google Sign-In</button>
+<h1>Angular2 Social login</h1>{{status}}
+              <button (click)="signIn('google')">google</button>
+              <button (click)="signIn('linkedin')">linkedIn</button>
+              <button (click)="signIn('facebook')">facebook</button>
+              <button (click)="logout()">logout</button>
+              <div *ngIf="user">
+                <table>
+                  <tr>
+                    <td>Name:</td>
+                    <td>{{user.name}}</td>
+                  </tr>
+                  <tr>
+                    <td>Email</td>
+                    <td>{{user.email}}</td>
+                  </tr>
+                  <tr>
+                    <td>UID</td>
+                    <td>{{user.uid}}</td>
+                  </tr>
+                  <tr>
+                    <td>Provider</td>
+                    <td>{{user.provider}}</td>
+                  </tr>
+                  <tr>
+                    <td>Image</td>
+                    <td>{{user.image}}</td>
+                  </tr>
+                </table>
+              </div>
 
-  <div *ngIf="token">
-    <img src="{{imageURL}}">
-    <br>
-    <b>TOKEN: </b>
-    <p>{{token}}</p>
-    <b>NAME: </b>
-    <p>{{name}}</p>
-    <b>EMAIL: </b>
-    <p>{{email}}</p>
-
-    <button class="btn btn-danger" (click)="logout()">Logout</button>
-  </div>
-</section>

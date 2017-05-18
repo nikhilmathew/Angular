@@ -1,96 +1,36 @@
-import { Component, OnInit, AfterViewInit, NgZone } from '@angular/core';
-import { AuthService, AppGlobals } from 'angular2-google-login';
-
-declare var gapi :any;
+import { Component, OnInit, NgZone } from '@angular/core';
+import  { AuthService } from 'motu-angular2-social-login'
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit,AfterViewInit {
-  imageURL: string;
-  email: string;
-  name: string;
-  token: string;
-  googleLoginButtonId=''
- 
-  constructor(private auth: AuthService, private zone: NgZone) {
-    console.log(this.zone)
-   }
-
-ngOnInit(){
-console.log( this.auth);
+export class HomeComponent implements OnInit{
+sub :any;
+user :any;
+constructor ( public _auth: AuthService) {
+  
 }
-  /* Ininitalizing Google Authentication API and getting data from localstorage if logged in
-   */
-  ngInit() {
-    //Set your Google Client ID here
-    AppGlobals.GOOGLE_CLIENT_ID = '_8vXBxai95mBXwQA554WQZhL';
-    this.getData();
-    setTimeout(() => { this.googleAuthenticate() }, 50);
+
+signIn(provider){
+  this.sub = this._auth.login(provider).subscribe(
+    (data)=> {
+      console.log(data);
+      this.user=data;
+    }
+  )
+}
+logout(){
+    this._auth.logout().subscribe(
+      (data)=>{//return a boolean value.
+      } 
+    )
   }
+ ngOnInit() {
+   //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+   //Add 'implements OnInit' to the class.
+   
+ }
+ 
 
-
- ngAfterViewInit() {
-
-    // Converts the Google login button stub to an actual button.
-
-    gapi.signin2.render(
-
-      this.googleLoginButtonId,
-
-      {
-
-        "onSuccess": this.onGoogleLoginSuccess,
-
-        "scope": "profile",
-
-        "theme": "dark"
-
-      });
-
-  }
-
-
-  /**
-   * Calling Google Authentication service
-   */
-  googleAuthenticate() {
-    this.auth.authenticateUser((result) => {
-      //Using Angular2 Zone dependency to manage the scope of variables
-      this.zone.run(() => {
-        this.getData();
-      });
-    });
-  }
-
-  /**
-   * Getting data from browser's local storage
-   */
-  getData() {
-    this.token = localStorage.getItem('token');
-    this.imageURL = localStorage.getItem('image');
-    this.name = localStorage.getItem('name');
-    this.email = localStorage.getItem('email');
-  }
-
-  /**
-   * Logout user and calls function to clear the localstorage
-   */
-  logout() {
-    let scopeReference = this;
-    this.auth.userLogout(function () {
-      scopeReference.clearLocalStorage();
-    });
-  }
-
-  /**
-   * Clearing Localstorage of browser
-   */
-  clearLocalStorage() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('image');
-    localStorage.removeItem('name');
-    localStorage.removeItem('email');
-  }
 }

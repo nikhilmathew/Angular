@@ -5,7 +5,17 @@ import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
-import { AuthService, AppGlobals } from 'angular2-google-login';
+import { Angular2SocialLoginModule } from "motu-angular2-social-login"
+
+let providers = {
+    "google": {
+      "clientId": "687691751177-ci9uc038n0vrleet1qreqhq2n3jcns1a.apps.googleusercontent.com"
+    },
+    "facebook": {
+      "clientId": "1868134046772255",
+      "apiVersion": "v2.8" //like v2.4 
+    }
+  };
 
 @NgModule({
   declarations: [
@@ -16,9 +26,13 @@ import { AuthService, AppGlobals } from 'angular2-google-login';
     BrowserModule,
     FormsModule,
     HttpModule,
+    Angular2SocialLoginModule
 
   ],
-  providers: [AuthService],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+
+Angular2SocialLoginModule.loadProvidersScripts(providers);
