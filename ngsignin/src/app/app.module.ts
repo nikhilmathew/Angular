@@ -5,7 +5,7 @@ import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
-import { Angular2SocialLoginModule } from "motu-angular2-social-login"
+import { Angular2SocialLoginModule } from "./social.login.module"
 
 let providers = {
     "google": {

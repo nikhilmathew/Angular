@@ -1,5 +1,5 @@
 import { Component, OnInit, NgZone } from '@angular/core';
-import  { AuthService } from 'motu-angular2-social-login'
+import  { AuthService } from '../Services/auth.service'
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -20,10 +20,14 @@ signIn(provider){
     }
   )
 }
+
 logout(){
     this._auth.logout().subscribe(
       (data)=>{//return a boolean value.
-      } 
+        console.log(data);
+        this.user=""
+
+    } 
     )
   }
  ngOnInit() {

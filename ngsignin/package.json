@@ -22,6 +22,7 @@
     "@angular/router": "^4.0.0",
     "bootstrap": "^3.3.7",
     "core-js": "^2.4.1",
+    "motu-angular2-social-login": "^3.0.3",
     "rxjs": "^5.4.0",
     "zone.js": "^0.8.4"
   },
