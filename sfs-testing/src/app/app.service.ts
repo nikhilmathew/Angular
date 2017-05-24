@@ -10,16 +10,17 @@ export class AppService {
     sfs: any;
     testSFX() {
         let config: any = {};
-        config.host = "stg-sf.sportsunity.co";
-        config.port = 9933;
+        config.host = "localhost";
+        config.port = 8080;
         config.useSSL = false;
-        config.zone = "SportsUnity";
+        config.zone = "BasicExamples";
         config.debug = false;
         this.sfs = new SFS2X.SmartFox(config);
+        
 
 
         console.log(this.sfs)
-        console.log(this.sfs.isConnected());
+        console.log(this.sfs.isConnected);
 
 
         this.sfs.addEventListener(SFS2X.SFSEvent.CONNECTION, onConnection, this.sfs);
@@ -29,16 +30,12 @@ export class AppService {
             else
                 console.log("Connection failed. Is the server running at all?");
         }
-        this.sfs.connect().subscribe(
-            (response)=>{
-                console.log(response);
-            }
-        )
+        this.sfs.connect()
 
     }
     testIfRunning() {
 
-        console.log(this.sfs.isConnected())
+        console.log(this.sfs.isConnected)
     }
     tryARoomRequest() {
         var settings = new SFS2X.RoomSettings("My Chat Room");
