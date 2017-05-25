@@ -18,6 +18,7 @@ export class AppService {
         this.sfs = new SFS2X.SmartFox(config);
         console.log(this)
 
+
         console.log(this.sfs)
         console.log(this.sfs.isConnected);
 
@@ -38,10 +39,16 @@ export class AppService {
     }
     tryARoomRequest() {
         var settings = new SFS2X.RoomSettings("My Chat Room");
+<<<<<<< HEAD
         settings.maxUsers = 20;
         settings.groupId = "chats";
         this.sfs.send(new SFS2X.CreateRoomRequest(settings));
         this.sfs.send(new SFS2X.JoinRoomRequest("The Lobby"));
 
+=======
+        settings.maxUsers = 2;
+        settings.groupId = "chats";
+        this.sfs.send(new SFS2X.CreateRoomRequest(settings));
+>>>>>>> 1d0a8e3de957e909767afb106c03125b20897ff8
     }
 }
