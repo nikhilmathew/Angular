@@ -10,10 +10,10 @@ export class AppService {
     sfs: any;
     testSFX() {
         let config: any = {};
-        config.host ='localhost';// "stg-sf.sportsunity.co";
+        config.host = 'localhost';// "stg-sf.sportsunity.co";
         config.port = 8080;
         config.useSSL = false;
-        config.zone = "BasicExamples ";
+        config.zone = "BasicExamples";
         config.debug = true;
         this.sfs = new SFS2X.SmartFox(config);
         console.log(this)
@@ -23,7 +23,7 @@ export class AppService {
         console.log(this.sfs.isConnected);
 
 
-        this.sfs.addEventListener(SFS2X.SFSEvent.CONNECTION, onConnection,window);
+        this.sfs.addEventListener(SFS2X.SFSEvent.CONNECTION, onConnection, window);
         function onConnection(evtParams) {
             if (evtParams.success)
                 console.log("Connected to SmartFoxServer 2X!");
@@ -37,12 +37,34 @@ export class AppService {
 
         console.log(this.sfs.isConnected)
     }
-    tryARoomRequest() {
+    tryARoomRequest(username: string) {
         var settings = new SFS2X.RoomSettings("My Chat Room");
         settings.maxUsers = 20;
-        settings.groupId = "chats";
-        this.sfs.send(new SFS2X.CreateRoomRequest(settings));
+        settings.groupId = "";
+        //this.sfs.send(new SFS2X.CreateRoomRequest(settings));
+
+        this.sfs.addEventListener(SFS2X.SFSEvent.LOGIN, onLogin, window);
+        this.sfs.addEventListener(SFS2X.SFSEvent.LOGIN_ERROR, onLoginError, window);
+
+        // Login
+
+        this.sfs.send(new SFS2X.LoginRequest(username, "", null, "BasicExamples"));
         this.sfs.send(new SFS2X.JoinRoomRequest("The Lobby"));
 
+        function onLogin(evtParams) {
+            console.log("Login successful!");
+        }
+
+        function onLoginError(evtParams) {
+            {
+                console.log("Login failure: " + evtParams.errorMessage);
+
+            }
+        }
+    }
+    relogin() {
+        if (this.sfs.isConnected === false) {
+            this.sfs.connect()
+        }
     }
 }

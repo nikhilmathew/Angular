@@ -8,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent {
   title = 'app works!';
+  username:string;
   constructor(private as: AppService){
     
   }
@@ -24,6 +25,9 @@ export class AppComponent {
     this.as.testIfRunning();
   }
   tryARr(){
-    this.as.tryARoomRequest();
+    this.as.tryARoomRequest(this.username);
+  }
+  relogin(){
+    this.as.relogin();
   }
 }

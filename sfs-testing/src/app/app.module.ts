@@ -18,4 +18,6 @@ import { AppComponent } from './app.component';
   providers: [AppService],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  
+ }
