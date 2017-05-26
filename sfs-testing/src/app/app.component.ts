@@ -7,7 +7,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  
   title = 'app works!';
+  time=30;
   username:string;
   constructor(private as: AppService){
     
@@ -26,8 +28,24 @@ export class AppComponent {
   }
   tryARr(){
     this.as.tryARoomRequest(this.username);
+    this.time=30;
+    this.timer();
   }
   relogin(){
     this.as.relogin();
   }
+      timer() {
+        setInterval(() => {
+            if (this.time != 0) {
+                this.time -= 1;
+            }
+
+        }, 1000)
+    }
+roomJoin(){
+  this.as.joinRoom();
+}
+extRequest(){
+  this.as.extreq();
+}
 }
