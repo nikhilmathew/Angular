@@ -20,7 +20,7 @@ export class AppService {
         console.log(window)
 
         console.log(this.sfs)
-        console.log(this.sfs.isConnected);
+        console.log(this.sfs.isConnected());
 
 
         this.sfs.addEventListener(SFS2X.SFSEvent.CONNECTION, onConnection, window);
@@ -35,7 +35,7 @@ export class AppService {
     }
     testIfRunning() {
 
-        console.log(this.sfs.isConnected)
+        console.log(this.sfs.isConnected())
     }
     tryARoomRequest(username: string) {
         var settings = new SFS2X.RoomSettings("My Chat Room");
