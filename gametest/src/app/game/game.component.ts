@@ -7,15 +7,16 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit {
-  @Output('oev')ev =new EventEmitter<string>()
+  @Output('oev') ev = new EventEmitter<string>()
   obj: any;
   singleobj: any;
   currentQuestion: number = 1;
   isClicked: boolean; false;
   answerclicked: boolean = false;
-  questionShowTime:number=0
-  answerClickTime:number;
-  questionTimer:any;
+  questionShowTime: number = 0
+  answerClickTime: number;
+  questionTimer: any;
+
   constructor(private ds: DataService) { }
 
   ngOnInit() {
@@ -25,38 +26,37 @@ export class GameComponent implements OnInit {
       this.singleobj = this.obj[0];
     })
   }
-  showCommentary(){
+  showCommentary() {
     console.log("commentary")
-
-    setTimeout(()=>{console.log("end commentary")},5000)
     this.printQuestionObject();
   }
-  printASingleQuestion(){
-    console.log(this.obj[0],this.currentQuestion)
-      this.singleobj = this.obj[this.currentQuestion]
-      this.questionShowTime = performance.now();
-      this.currentQuestion++;
-      this.answerclicked = false;
+  printASingleQuestion() {
+    console.log(this.obj[0], this.currentQuestion)
+    this.singleobj = this.obj[this.currentQuestion]
+    this.questionShowTime = performance.now();
+    this.currentQuestion++;
+    this.answerclicked = false;
   }
   printQuestionObject() {
     this.isClicked = true;
     this.questionTimer = setTimeout(() => {
+
       this.showCommentary()
-      console.log(this.obj[0],this.currentQuestion)
+      console.log(this.obj[0], this.currentQuestion)
       this.singleobj = this.obj[this.currentQuestion]
       this.questionShowTime = performance.now();
       this.currentQuestion++;
       this.answerclicked = false;
-      if(this.currentQuestion<12)
+      if (this.currentQuestion < 12)
         this.showCommentary();
     }, 5000)
-    
+
     //console.log(this.obj)
   }
   checkAnswer(event, answer) {
     this.answerclicked = true;
-    this.answerClickTime=performance.now()
-    console.log(this.answerClickTime,this.questionShowTime,"clicking this answer took "+(this.answerClickTime-this.questionShowTime)+" milliseconds")
+    this.answerClickTime = performance.now()
+    console.log(this.answerClickTime, this.questionShowTime, "clicking this answer took " + (this.answerClickTime - this.questionShowTime) + " milliseconds")
     console.log(event, answer);
     if (this.singleobj.correct_answer === answer) {
       console.log("correct answer selected")
@@ -64,5 +64,5 @@ export class GameComponent implements OnInit {
       console.log("wrong answer");
     }
   }
-  
+
 }
