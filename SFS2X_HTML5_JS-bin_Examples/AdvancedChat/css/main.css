@@ -1,0 +1,306 @@
+@charset "UTF-8";
+
+body {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: small;
+	line-height: 1.2em;
+	color: #333333;
+}
+
+#header, #controls, #main, #footer {
+	width: 860px;
+	margin: 0px auto;
+	padding: 20px 0;
+	border-bottom: solid 1px #CCCCCC;
+}
+
+#header #title {
+	float: right;
+	text-align: right;
+	font-size: 80%;
+}
+
+#controls {
+	padding: 10px 0;
+	vertical-align: middle;
+}
+
+#main {
+	min-height: 520px;
+	padding-bottom: 40px;
+}
+
+#main #chatbox {
+	width: 580px;
+	height: 490px;
+	float: left;
+	background-color: #EEEEEE;
+	padding: 10px;
+	border-radius: 6px;
+}
+
+#main #chatbox .chatControls {
+	padding-top: 10px;
+}
+
+#main #sideBar {
+	overflow: hidden;
+	float: right;
+}
+
+#main #sideBar .sideBarControls {
+	padding: 5px;
+}
+
+#footer {
+	font-size: 80%;
+	padding: 5px 0;
+	text-align: justify;
+	border-bottom: none;
+}
+
+div.sideBarControls div {
+	float: left;
+}
+
+.vSeparate {
+	padding-bottom: 10px;
+}
+
+.floating {
+	float: left;
+}
+
+.floatingSep {
+	float: left;
+	margin-right: 5px;
+}
+
+.vSeparateTop {
+	padding-top: 5px;
+}
+
+#createRoomWin .icon {
+	margin-right: 10px;
+}
+
+#createRoomWinContent .item {
+	padding-bottom: 5px;
+	float: left;
+	width: 100%;
+}
+
+#createRoomWinContent .item label {
+	float: left;
+	width: 140px;
+	padding-top: 4px;
+}
+
+#createRoomWinContent .item .checkBox {
+	margin-top: 6px;
+	float: left;
+}
+
+#createRoomWinContent .item .textInput,
+#createRoomWinContent .item .numInput {
+	float: left;
+}
+
+#createRoomWinControls {
+	float: left;
+	padding-top: 5px;
+	width: 100%;
+}
+
+#createRoomWinControls #doCreateRoomBt {
+	float: left;
+}
+
+#createRoomWinControls #cancelBt {
+	float: right;
+}
+
+#createRoomWinControls .checkBox {
+	float: left;
+	margin-top: 4px;
+	width: 100%;
+}
+
+#roleLb {
+	width: 110px;
+	margin-right: 7px;
+	line-height: 26px;
+	font-style: italic;
+	font-size: 90%;
+}
+
+.chatAreaElement {
+	padding: 3px;
+	font-size: 90%;
+}
+
+.chatAreaElement em {
+	color: #BBBBBB;
+}
+
+.chatAreaElement em.mod {
+	color: #FF3300;
+}
+
+.chatAreaElement em.admin {
+	color: #CC0000;
+}
+
+.chatAreaElement em.pm {
+	color: #3399FF;
+	font-style: normal;
+	font-weight: bold;
+}
+
+.chatTopic {
+	float: right;
+	color: #999999;
+}
+
+#roomControlsTitle {
+	font-size: 70%;
+	border-bottom: 1px solid #DDDDDD;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	width: 100%;
+	color: #999999;
+}
+
+#newRoomSizeLabel {
+	width: 70px;
+	padding-top: 2px;
+}
+
+#lagLb {
+	float: right;
+	line-height: 22px;
+	color: #CCCCCC;
+}
+
+/* Floats self-clearing */
+
+.group:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+/* for IE6 */
+* html .group {
+	height: 1%;
+}
+
+/* for IE7 */
+*:first-child+html .group {
+	min-height: 1px;
+}
+
+
+/* BASIC STYLES */
+
+a:link, a:visited {
+	color: #3399FF;
+	font-weight: normal;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #3366FF;
+}
+
+a img {
+	border: none;
+}
+
+h1 {
+	font-weight: normal;
+	font-size: 150%;
+	color: #767D4D;
+	padding-top: 30px;
+	padding-bottom: 10px;
+	margin-bottom: 10px;
+	line-height: 0.8em;
+}
+
+h3 {
+	font-weight: normal;
+	color: #767D4D;
+	margin-top: 20px;
+}
+
+.smallNote {
+	font-size: 80%;
+	color: #999999;
+}
+
+.sectionTitle {
+	font-weight: bold;
+	padding-bottom: 10px;
+}
+
+input.textInput {
+	font-size: 100%;
+	border: 1px solid #AAAAAA;
+	border-radius: 3px;
+	background-color: #FCFCFC;
+	height: 20px;
+	padding-left: 4px;
+}
+
+input.small {
+	width: 140px;
+}
+
+input.smaller {
+	width: 110px;
+}
+
+input.textInput[disabled] {
+	border-color: #DCDCDC;
+	background-color: #F9F9F9;
+}
+
+/* OVERRIDE JQWIDGETS BASIC STYLES */
+
+.jqx-listbox {
+	font-size: 90%;
+	border-left: none;
+	border-right: none;
+	border-radius: 0;
+}
+
+.jqx-listitem-state-group {
+	font-style: italic;
+	font-weight: normal;
+}
+
+.jqx-listitem-state-normal .itemTitle {
+	color: #FE4200;
+}
+
+.jqx-listitem-state-hover .itemTitle {
+	color: #FFFFFF;
+}
+
+.jqx-listitem-state-selected .itemTitle {
+	color: #FFFFFF;
+}
+
+.jqx-listbox .itemSub {
+	font-size: 90%;
+}
+
+.jqx-listbox .toRead {
+	color: #CC0000;
+}
+
+.jqx-tabs-content {
+	padding: 5px;
+}

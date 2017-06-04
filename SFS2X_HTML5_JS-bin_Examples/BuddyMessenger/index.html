@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="author" content="Bax">
+	<title>SmartFoxServer 2X | Buddy Messenger</title>
+
+	<!-- Reset styles -->
+	<link href="css/reset.css" rel="stylesheet" type="text/css" />
+
+	<!-- Load jQuery and jQWidgets frameworks -->
+	<link href="libs/jqwidgets/styles/jqx.base.css" rel="stylesheet" type="text/css" />
+	<link href="libs/jqwidgets/styles/jqx.summer.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="libs/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxcore.js"></script>
+
+	<!-- Set custom styles -->
+	<link href="css/main.css" rel="stylesheet" type="text/css" />
+
+	<!-- Load jQWidgets' required widgets -->
+	<script type="text/javascript" src="libs/jqwidgets/jqxbuttons.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxwindow.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxlistbox.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxscrollbar.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxcheckbox.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxnumberinput.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxdropdownlist.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxtabs.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxpanel.js"></script>
+
+	<!-- Load SFS2X JS API -->
+	<script type="text/javascript" src="libs/sfs2x-api-1.7.2.js"></script>
+
+	<!-- Load main script -->
+	<script type="text/javascript" src="scripts/main.js"></script>
+
+	<!-- Initialize user interface -->
+	<script type="text/javascript">
+		$(document).ready(function () {
+
+			theme = "summer";
+
+			// Init main widgets
+			$("#connectBt").jqxButton({width:100, height:24, theme:theme});
+			$("#disconnectBt").jqxButton({width:100, height:24, theme:theme, disabled:true});
+			$("#loginBt").jqxButton({width:100, height:24, theme:theme, disabled:true});
+
+			$("#buddyListWin").jqxWindow({width:250, height:470, position:[100,100], isModal:false, autoOpen:false, resizable:false, draggable:true, showCloseButton:false, theme:theme});
+			$("#buddyChatWin").jqxWindow({width:500, height:350, isModal:false, autoOpen:false, resizable:false, draggable:true, showAnimationDuration:100, closeAnimationDuration:100, theme:theme});
+			$("#buddyInfoWin").jqxWindow({width:500, height:215, isModal:false, autoOpen:false, resizable:false, draggable:true, showCloseButton:false, theme:theme});
+
+			$("#buddyList").jqxListBox({source:[], width:238, height:305, theme:theme});
+			$("#logoutBt").jqxButton({width:100, height:24, theme:theme});
+			$("#blockBt").jqxButton({width:65, height:24, theme:theme, disabled:true});
+			$("#removeBt").jqxButton({width:65, height:24, theme:theme, disabled:true});
+			$("#chatBt").jqxButton({width:60, height:24, theme:theme, disabled:true});
+			$("#clearBt").jqxButton({width:20, height:24, theme:theme, disabled:true});
+			$("#addBt").jqxButton({width:73, height:24, theme:theme});
+
+			$("#isOnlineCb").jqxCheckBox({width:24, height:24, checked:true, theme:theme});
+			$("#setNicknameBt").jqxButton({width:80, height:24, theme:theme});
+			$("#ageIn").jqxNumberInput({width:80, height:20, decimalDigits:0, spinButtons:true, decimal:0, min:0, inputMode:"simple", theme:theme});
+			$("#setAgeBt").jqxButton({width:80, height:24, theme:theme});
+			$("#setMoodBt").jqxButton({width:80, height:24, theme:theme});
+			$("#stateDd").jqxDropDownList({width:205, height:22, dropDownHeight:74});
+
+			$("#chatTabs").jqxTabs({width:"100%", height:310, showCloseButtons:true, theme:"classic"});
+
+			// Add event listeners
+			$(window).resize(onBrowserResize);
+			$("#buddyListWin").bind("moved", onWindowMove);
+			$("#buddyChatWin").bind("moved", onWindowMove);
+			$("#buddyInfoWin").bind("moved", onWindowMove);
+			$("#connectBt").click(onConnectBtClick);
+			$("#loginBt").click(onLoginBtClick);
+			$("#disconnectBt").click(onDisconnectBtClick);
+			$("#logoutBt").click(onLogoutBtClick);
+			$("#buddyList").bind("select", onBuddySelected);
+			$("#blockBt").click(onBlockBuddyBtClick);
+			$("#removeBt").click(onRemoveBuddyBtClick);
+			$("#chatBt").click(onChatBtClick);
+			$("#clearBt").click(onClearBtClick);
+			$("#addBt").click(onAddBuddyBtClick);
+
+			$("#isOnlineCb").bind("change", onIsOnlineChange);
+			$("#setNicknameBt").click(onSetNicknameBtClick);
+			$("#setAgeBt").click(onSetAgeBtClick);
+			$("#setMoodBt").click(onSetMoodBtClick);
+			$("#stateDd").change(onStateChange);
+
+			$("#chatTabs").on("removed", onChatTabClosed);
+	    });
+	</script>
+</head>
+
+<body onLoad="init()">
+	<div id="header">
+		<img src="images/logo.png"/>
+		<p id="title">SmartFoxServer 2X Examples<br/><strong>Buddy Messenger</strong><br/>&copy; 2017 gotoAndPlay()</p>
+	</div>
+
+	<div id="main" class="group">
+		<div id="login" class="hidden viewStack">
+			<h2>Connect</h2>
+			<div class="group vSep20">
+				<input type="button" id="connectBt" value="Connect"/>
+				<input type="button" id="disconnectBt" value="Disconnect"/>
+			</div>
+			<h2>Login</h2>
+			<div class="group vSep10">
+				<input type="text" id="usernameIn" class="textInput" disabled="true" placeholder="Your username"/>
+				<input type="button" id="loginBt" value="Login"/>
+			</div>
+			<div id="errorLb" class="error invisible vSep10">&nbsp;</div>
+		</div>
+		<div id="messenger" class="hidden viewStack" style="position:relative;">
+			<div id="buddyListWin" class="panel">
+				<div>Buddy List</div>
+				<div style="overflow: hidden">
+					<div id="buddyList"></div>
+					<div class="listControls">
+						<input type="button" id="blockBt" value="Block"/>
+						<input type="button" id="removeBt" value="Remove"/>
+						<input type="button" id="chatBt" value="Chat"/>
+						<input type="button" id="clearBt" value="X"/>
+					</div>
+					<div class="listControls">
+						<input type="text" id="buddyNameIn" class="textInput" placeholder="Enter a username"/>
+						<input type="button" id="addBt" value="Add"/>
+					</div>
+					<div class="listControls hr">
+						<input type="button" id="logoutBt" value="Logout"/>
+					</div>
+				</div>
+			</div>
+			<div id="buddyChatWin" class="panel">
+				<div>Chat</div>
+				<div>
+					<div id="chatTabs">
+						<ul>
+							<li style="display:none">temp</li>
+						</ul>
+						<div><!-- Hidden tab required to avoid an error fired by the Tabs widget on startup if no tabs are defined --></div>
+					</div>
+				</div>
+			</div>
+			<div id="buddyInfoWin" class="panel">
+				<div>My details</div>
+				<div>
+					<div class="item"><label>Username:</label><label id="usernameLb2" class="strong"></label></div>
+					<div class="item"><label>Online:</label><div id="isOnlineCb" class="checkBox">(as buddy)</div></div>
+					<hr/>
+					<div id="buddyDetailsControls">
+						<div class="item">
+							<label>Nickname:</label>
+							<input type="text" id="nicknameIn" class="textInput"/>
+							<input type="button" class="formButton" id="setNicknameBt" value="Set"/>
+						</div>
+						<div class="item">
+							<label>Age:</label>
+							<div id="ageIn" class="numInput"></div>
+							<input type="button" class="formButton" id="setAgeBt" value="Set"/>
+						</div>
+						<div class="item">
+							<label>Mood:</label>
+							<input type="text" id="moodIn" class="textInput"/>
+							<input type="button" class="formButton" id="setMoodBt" value="Set"/>
+						</div>
+						<div class="item">
+							<label>State:</label>
+							<div id="stateDd"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="footer">
+		<p>This example application makes use of <a href="http://www.jqwidgets.com/" target="_blank">jQWidgets UI Toolkit</a>.
+			The widgets are distributed for learning purposes only and you are not entitled to use them in a commercial product.
+			If needed, please visit the <b>jQWidgets</b> website to acquire a proper license.</p>
+	</div>
+
+</body>
+</html>

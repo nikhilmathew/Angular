@@ -1,0 +1,27 @@
+@charset "UTF-8";
+
+body {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: small;
+	line-height: 1.2em;
+	color: #EEEEEE;
+	background-color: #333333;
+	margin: 0;
+}
+
+#header, #main {
+	width: 1000px;
+	margin: 0px auto;
+	border-bottom: solid 1px #DDDDDD;
+}
+
+#header {
+	padding: 20px 0;
+}
+
+#header #title {
+	float: right;
+	text-align: center;
+	font-size: 80%;
+	margin: 0;
+}

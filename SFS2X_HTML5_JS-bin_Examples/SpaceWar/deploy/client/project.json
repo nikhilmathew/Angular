@@ -1,0 +1,29 @@
+{
+	"project_type"	: "javascript",
+	"engineDir"		: "frameworks/cocos2d-html5",
+	"modules"		: ["cocos2d"],
+
+	"debugMode"		: 1,
+	"showFPS"		: false,
+	"frameRate"		: 25,
+	"id"			: "gameCanvas",
+	"renderMode"	: 1,
+
+	"jsList"		: [
+						"src/resources.js",
+
+						"src/lib/sfs2x-api-1.7.2.js",
+
+						"src/layers/background.js",
+						"src/layers/base-menu.js",
+						"src/layers/title.js",
+
+						"src/other/game-constants.js",
+						"src/other/game-objects.js",
+
+						"src/scenes/game.js",
+						"src/scenes/starship-selection.js",
+						"src/scenes/solar-system-selection.js",
+						"src/scenes/title.js"
+					  ]
+}

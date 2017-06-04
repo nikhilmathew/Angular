@@ -1,0 +1,345 @@
+@charset "UTF-8";
+
+body {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: small;
+	line-height: 1.2em;
+	color: #333333;
+}
+
+#header, #main, #footer {
+	width: 860px;
+	margin: 0px auto;
+	padding: 20px 0;
+	border-bottom: solid 1px #CCCCCC;
+}
+
+#header #title {
+	float: right;
+	text-align: right;
+	font-size: 80%;
+}
+
+#main {
+	min-height: 580px;
+}
+
+#main #sideBar {
+	float: right;
+}
+
+#main #sideBar .sideBarControls {
+	padding: 5px;
+}
+
+.viewStack {
+	margin: 0 auto;
+	min-height: 570px;
+}
+
+#login {
+	min-height: 0;
+	margin-top: 150px;
+	width: 400px;
+	background-color: #EEEEEE;
+	border-radius: 10px;
+	padding: 10px;
+}
+
+#footer {
+	font-size: 80%;
+	padding: 5px 0;
+	text-align: justify;
+	border-bottom: none;
+}
+
+/* Floats self-clearing */
+
+.group:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+/* for IE6 */
+* html .group {
+	height: 1%;
+}
+
+/* for IE7 */
+*:first-child+html .group {
+	min-height: 1px;
+}
+
+
+/* BASIC STYLES */
+
+a:link, a:visited {
+	color: #3399FF;
+	font-weight: normal;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #3366FF;
+}
+
+a img {
+	border: none;
+}
+
+h1 {
+	font-weight: normal;
+	font-size: 150%;
+	color: #CC0000;
+	padding-bottom: 20px;
+	line-height: 0.8em;
+}
+
+h2 {
+	font-weight: bold;
+	font-size: 120%;
+	color: #666666;
+	padding: 0px 0 10px 0;
+}
+
+label {
+	font-weight: bold;
+}
+
+.smallNote {
+	font-size: 80%;
+	color: #999999;
+	margin-right:5px;
+	margin-left:5px;
+}
+
+input.textInput {
+	font-size: 100%;
+	border: 1px solid #AAAAAA;
+	border-radius: 3px;
+	background-color: #FCFCFC;
+	height: 20px;
+	padding-left: 4px;
+}
+
+input.small {
+	width: 140px;
+}
+
+input.smaller {
+	width: 110px;
+}
+
+input.textInput[disabled] {
+	border-color: #DCDCDC;
+	background-color: #F9F9F9;
+	color: #CCCCCC;
+}
+
+.floatItems * {
+	float: left;
+}
+
+.floatItems label,
+.floatItems p {
+	margin-right: 5px;
+	line-height: 24px;
+}
+
+.hidden {
+	opacity: 0;
+}
+
+.invisible {
+	display: none;
+}
+
+.vSeparateTop {
+	padding-top: 5px;
+}
+
+.vSeparateTop10 {
+	padding-top: 10px;
+}
+
+.vSep10 {
+	margin-bottom: 10px;
+}
+
+.vSep20 {
+	margin-bottom: 20px;
+}
+
+.error {
+	color: #CC0000;
+	padding-top: 10px;
+}
+
+/*
+	Lobby View
+*/
+
+#lobby .leftBox {
+	width: 580px;
+	float: left;
+	background-color: #EEEEEE;
+	padding: 10px;
+	border-radius: 10px;
+	margin-bottom: 10px;
+}
+
+#lobby #chatbox .chatControls {
+	padding-top: 10px;
+}
+
+#lobby .listControls {
+	margin: 10px 9px 10px 9px;
+}
+
+#lobby .listControls > *:not(:first-child) {
+	margin-top: 10px;
+}
+
+.chatAreaElement {
+	padding: 3px;
+	font-size: 90%;
+}
+
+.chatAreaElement em {
+	color: #BBBBBB;
+}
+
+/*
+	Game View
+*/
+
+#game #gameBar {
+	float: right;
+}
+
+#game #gameBar .gameBarControls {
+	padding: 5px;
+}
+
+#game .leftBox {
+	width: 580px;
+	float: left;
+	background-color: #EEEEEE;
+	padding: 10px;
+	border-radius: 10px;
+	margin-bottom: 10px;
+}
+
+#game #gamebox #gameContainer {
+	padding-bottom:5px;
+	float:left;
+}
+
+#game #gamebox #gameControls {
+	float:left;
+}
+
+/* POPUPS */
+
+#createGameWinTabs {
+	margin: 10px;
+}
+
+#createGameWinTabs * {
+	float: left;
+}
+
+#createGameWinTabs .item {
+	padding-bottom: 5px;
+	width: 100%;
+}
+
+#createGameWinTabs .item label {
+	width: 140px;
+	padding-top: 4px;
+	font-weight: normal;
+}
+
+#createGameWinTabs .item input {
+	width: 200px;
+}
+
+.gamePopup .content {
+	display: table;
+}
+
+.gamePopup .gameMessage {
+	display: table-cell; 
+	vertical-align: middle;
+	color: #D01010;
+	font-weight: bold;
+	text-align: center;
+	font-size: 14px;
+}
+
+.gamePopup #secondRow hr {
+	border: 0;
+	border-top: 1px solid #CCCCCC;
+	height: 1px;
+}
+
+.popupWinControls {
+	float: left;
+	padding-top: 15px;
+	width: 100%;
+}
+
+.popupWinControls .leftButton {
+	float: left;
+}
+
+.popupWinControls .rightButton {
+	float: right;
+}
+~
+.popupWinControls .centerButton {
+	margin-right: auto;
+	margin-left: auto;
+	vertical-align:middle;
+}
+
+/* OVERRIDE JQWIDGETS BASIC STYLES */
+
+#roomList.jqx-listbox,
+#userList.jqx-listbox {
+	font-size: 90%;
+	border-left: none;
+	border-right: none;
+	border-radius: 0;
+}
+
+.jqx-listitem-state-normal .itemTitle {
+	color: #FE4200;
+}
+
+.jqx-listitem-state-hover .itemTitle {
+	color: #FFFFFF;
+}
+
+.jqx-listitem-state-selected .itemTitle {
+	color: #FFFFFF;
+}
+
+.jqx-listbox .game:before {
+	content: url('../images/icon.png');
+}
+
+.jqx-listbox .itemSub {
+	font-size: 90%;
+}
+
+.jqx-listbox .toRead {
+	color: #CC0000;
+}
+
+.jqx-tabs-content {
+	padding: 5px;
+}

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="author" content="Rjgtav">
+	<title>SmartFoxServer 2X | Tris</title>
+
+	<!-- Reset styles -->
+	<link href="css/reset.css" rel="stylesheet" type="text/css" />
+
+	<!-- Load jQuery and jQWidgets frameworks -->
+	<link href="libs/jqwidgets/styles/jqx.base.css" rel="stylesheet" type="text/css" />
+	<link href="libs/jqwidgets/styles/jqx.summer.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="libs/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxcore.js"></script>
+
+	<!-- Set custom styles -->
+	<link href="css/main.css" rel="stylesheet" type="text/css" />
+
+	<!-- Load createJS's required frameworks -->
+	<script type="text/javascript" src="libs/easeljs-0.5.0.min.js"></script>
+    <script type="text/javascript" src="libs/tweenjs-0.3.0.min.js"></script>
+
+	<!-- Load jQWidgets' required widgets -->
+	<script type="text/javascript" src="libs/jqwidgets/jqxbuttons.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxscrollbar.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxpanel.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxnumberinput.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxlistbox.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxexpander.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxnavigationbar.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxwindow.js"></script>
+
+	<!-- Load SFS2X JS API -->
+	<script type="text/javascript" src="libs/sfs2x-api-1.7.2.js"></script>
+
+	<!-- Load main script -->
+	<script type="text/javascript" src="scripts/main.js"></script>
+	<script type="text/javascript" src="scripts/TrisGame.js"></script>
+
+	<!-- Initialize user interface -->
+	<script type="text/javascript">
+		$(document).ready(function () {
+			var theme = "summer";
+
+			//------------------
+			// Init jqWidgets
+			//------------------
+
+			// Login View
+			$("#connectBt").jqxButton({width:100, theme:theme});
+			$("#disconnectBt").jqxButton({width:100, theme:theme, disabled:true});
+			$("#loginBt").jqxButton({width:100, theme:theme, disabled:true});
+			$("#logoutBt").jqxButton({width:100, theme:theme});
+
+			// Lobby View
+			$("#publicChatAreaPn").jqxPanel({width:578, height:455, theme:theme, disabled:true, autoUpdate:true});
+			$("#sendPublicMsgBt").jqxButton({width:100, theme:theme, disabled:true});
+			$("#sideBar").jqxNavigationBar({width:250, height:535, sizeMode:"fitAvailableHeight", theme:theme});
+			$("#quickJoinBt").jqxButton({width:230, theme:theme});
+			$("#createGameBt").jqxButton({width:230, theme:theme});
+			$("#playGameBt").jqxButton({width:100, theme:theme, disabled:true});
+			$("#watchGameBt").jqxButton({width:100, theme:theme, disabled:true});
+			$("#deselectGameBt").jqxButton({width:24, theme:theme, disabled:true});
+			$("#roomList").jqxListBox({source:[], width:248, height:355, theme:theme});
+			$("#userList").jqxListBox({source:[], width:248, height:285, theme:theme});
+			$("#privChatAreaPn").jqxPanel({width:236, height:135, theme:theme, disabled:true, autoUpdate:true});
+			$("#sendPrivMsgBt").jqxButton({width:76, theme:theme, disabled:true});
+			$("#deselectUserBt").jqxButton({width:24, theme:theme, disabled:true});
+
+			// Game View
+			$("#gameChatAreaPn").jqxPanel({width:240, height:470, theme:theme, disabled:true, autoUpdate:true});
+			$("#sendGameMsgBt").jqxButton({width:76, theme:theme, disabled:true});
+			$("#leaveGameBt").jqxButton({width:100, theme:theme});
+
+			// Init game room creation window widgets
+			$("#createGameWin").jqxWindow({width:380, height:145, isModal:true, autoOpen:false, resizable:false, draggable:false, cancelButton:$("#cancelBt"), showAnimationDuration: 200, closeAnimationDuration: 100, theme:theme});
+			$("#doCreateGameBt").jqxButton({width:100, theme:theme});
+			$("#cancelBt").jqxButton({width:100, theme:theme});
+			$("#spectatorsIn").jqxNumberInput({width:80, height:20, decimalDigits:0, spinButtons:true, decimal:2, min:0, max:5, inputMode:"simple", theme:theme});
+
+			// Game Popups
+			$("#waitGameWin").jqxWindow({width:250, height:150, autoOpen:false, resizable:false, draggable:false, showCloseButton: false, showAnimationDuration: 200, closeAnimationDuration: 100, theme:theme});
+			$("#waitSpecGameWin").jqxWindow({width:250, height:150, autoOpen:false, resizable:false, draggable:false, showCloseButton: false, showAnimationDuration: 200, closeAnimationDuration: 100, theme:theme});
+			$("#endGameWin").jqxWindow({width:250, height:150, autoOpen:false, resizable:false, draggable:false, showCloseButton: false, showAnimationDuration: 200, closeAnimationDuration: 100, theme:theme});
+			$("#endSpecGameWin").jqxWindow({width:250, height:150, autoOpen:false, resizable:false, draggable:false, showCloseButton: false, showAnimationDuration: 200, closeAnimationDuration: 100, theme:theme});
+			$("#joinGameBt").jqxButton({width:100, theme:theme});
+			$("#restartGameBt").jqxButton({width:100, theme:theme});
+
+			//------------------
+			// Event Listeners
+			//------------------
+
+			// Login View
+			$("#connectBt").click(onConnectBtClick);
+			$("#loginBt").click(onLoginBtClick);
+			$("#disconnectBt").click(onDisconnectBtClick);
+			$("#logoutBt").click(onLogoutBtClick);
+
+			// Lobby View
+			$("#sendPublicMsgBt").click(onSendPublicMessageBtClick);
+			$("#userList").bind("select", onUserSelected);
+			$("#roomList").bind("select", onRoomSelected);
+			$("#quickJoinBt").click(onQuickJoinBtClick);
+			$("#createGameBt").click(onCreateGameBtClick);
+			$("#playGameBt").click(onPlayGameBtClick);
+			$("#watchGameBt").click(onWatchGameBtClick);
+			$("#deselectGameBt").click(onDeselectGameBtClick);
+			$("#sendPrivMsgBt").click(onSendPrivateMessageBtClick);
+			$("#deselectUserBt").click(onDeselectUserBtClick);
+
+			// Game View
+			$("#sendGameMsgBt").click(onSendPublicMessageBtClick);
+			$("#leaveGameBt").click(onLeaveGameBtClick);
+
+			// Create new game Popup
+			$("#createGameWin").bind("closed", onCreateGameWinClose);
+			$("#doCreateGameBt").click(onDoCreateGameBtClick);
+
+			// Game Popups
+			$("#joinGameBt").click(spectatorJoinGame);
+			$("#restartGameBt").click(restartGame);
+	    });
+	</script>
+</head>
+
+<body onLoad="init()">
+	<!-- HEADER -->
+	<div id="header">
+		<img src="images/logo.png"/>
+		<p id="title">SmartFoxServer 2X Examples<br/><strong>Tris</strong><br/>&copy; 2017 gotoAndPlay()</p>
+	</div>
+
+	<!-- CONTENT -->
+	<div id="main" class="group">
+		<!-- Login View -->
+		<div id="login" class="hidden viewStack">
+			<h2>Connect</h2>
+			<div class="group vSep20">
+				<input type="button" id="connectBt" value="Connect"/>
+				<input type="button" id="disconnectBt" value="Disconnect"/>
+			</div>
+			<h2>Login</h2>
+			<div class="group vSep10">
+				<input type="text" id="usernameIn" class="textInput" disabled="true" placeholder="Your username"/>
+				<input type="button" id="loginBt" value="Login"/>
+			</div>
+			<div id="errorLb" class="error invisible vSep10">&nbsp;</div>
+		</div>
+		<!-- Lobby View -->
+		<div id="lobby" class="hidden viewStack">
+			<h1>Welcome to <b id="roomLb">&nbsp;</b></h1>
+			<div id="sideBar">
+				<!-- RoomList -->
+				<div>Public games</div>
+				<div>
+					<div class="listControls">
+						<input type="button" id="quickJoinBt" value="Quick game join"/>
+						<input type="button" id="createGameBt" value="Start new game"/>
+					</div>
+					<div id="roomList"></div>
+					<div class="sideBarControls vSeparateTop10">
+						<input type="button" id="playGameBt" value="Play"/>
+						<input type="button" id="watchGameBt" value="Watch"/>
+						<input type="button" id="deselectGameBt" value="X"/>
+					</div>
+				</div>
+
+				<!-- UserList-->
+				<div>Available players</div>
+				<div>
+					<div id="userList"></div>
+					<div class="sideBarControls">
+						<p class="smallNote">Private chat <span id="privChatUserLb"></span></p>
+						<div id="privChatAreaPn"></div>
+						<div class="vSeparateTop">
+							<input type="text" id="privateMsgIn" class="textInput smaller" disabled="true" placeholder="Type your PM" style="width: 118px"/>
+							<input type="button" id="sendPrivMsgBt" value="Send"/>
+							<input type="button" id="deselectUserBt" value="X"/>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="chatbox" class="leftBox">
+				<h2>Public chat</h2>
+				<div id="publicChatAreaPn"></div>
+				<div class="chatControls">
+					<input type="text" id="publicMsgIn" class="textInput" disabled="true" placeholder="Type your message &amp; hit send" style="width: 363px;"/>
+					<input type="button" id="sendPublicMsgBt" value="Send"/>
+					<input type="button" id="logoutBt" value="Logout"/>
+				</div>
+			</div>
+		</div>
+		<!-- Game View -->
+		<div id="game" class="hidden viewStack">
+			<h1><b>Tris Game</b></h1>
+			<div id="gameBar">
+				<h2>&nbsp;<b>In-game chat</b></h2>
+				<div class="gameBarControls">
+					<div id="gameChatAreaPn"></div>
+					<div class="vSeparateTop">
+						<input type="text" id="gameMsgIn" class="textInput smaller" disabled="true" placeholder="Type your message" style="width: 150px"/>
+						<input type="button" id="sendGameMsgBt" value="Send"/>
+					</div>
+				</div>
+			</div>
+			<div id="gamebox" class="leftBox">
+				<canvas id="gameContainer" width="578" height="485">Your Browser doesn't support Canvas</canvas>
+
+				<!-- Game Popups -->
+				<div id="waitGameWin" class="gamePopup">
+					<div><strong>Waiting...</strong></div>
+					<div class="content">
+						<div id="firstRow"  style="display: table-row; height: 100%;">
+							<p class="gameMessage" id="message">Testing</p>
+						</div>
+					</div>
+				</div>
+				<div id="waitSpecGameWin" class="gamePopup">
+					<div><strong>Waiting...</strong></div>
+					<div class="content">
+						<div id="firstRow" style="display: table-row; height: 80%;">
+							<p class="gameMessage" id="message"></p>
+						</div>
+						<div id="secondRow" style="display: table-row; text-align: center;">
+							<hr/>
+							<input type="button" id="joinGameBt" class="centerButton" value="Join Game"/>
+						</div>
+					</div>
+				</div>
+				<div id="endGameWin" class="gamePopup">
+					<div><strong>The game has ended</strong></div>
+					<div class="content">
+						<div id="firstRow" style="display: table-row; height: 80%;">
+							<p class="gameMessage" id="message"></p>
+						</div>
+						<div id="secondRow" style="display: table-row; text-align: center;">
+							<hr/>
+							<input type="button" id="restartGameBt" class="centerButton" value="Restart Game"/>
+						</div>
+					</div>
+				</div>
+				<div id="endSpecGameWin" class="gamePopup">
+					<div><strong>The game has ended</strong></div>
+					<div class="content">
+						<div id="firstRow" style="display: table-row; height: 100%;">
+							<p class="gameMessage" id="message"></p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Game Controls -->
+				<div class="gameControls">
+					<input type="button" id="leaveGameBt" value="Leave game" />
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- FOOTER -->
+	<div id="footer">
+		<p>This example application makes use of <a href="http://www.jqwidgets.com/" target="_blank">jQWidgets UI Toolkit</a>.
+			The widgets are distributed for learning purposes only and you are not entitled to use them in a commercial product.
+			If needed, please visit the <b>jQWidgets</b> website to acquire a proper license.</p>
+	</div>
+
+	<!-- POPUPS -->
+
+	<!-- Game Room creation popup window -->
+	<div id="createGameWin">
+		<div id="createGameWinHeader">
+			<strong>Create new game</strong>
+		</div>
+		<div id="createGameWinContent">
+			<div id="createGameWinTabs">
+				<div>
+					<div class="item"><label>Match name:</label><input type="text" id="gameNameIn" class="textInput"/></div>
+					<div class="item"><label>Spectators:</label><div id="spectatorsIn" class="numInput"></div></div>
+				</div>
+			</div>
+
+			<div id="createGameWinControls" class="popupWinControls">
+				<input type="button" id="doCreateGameBt" class="leftButton" value="Create"/>
+				<input type="button" id="cancelBt" class="rightButton" value="Cancel"/>
+			</div>
+		</div>
+	</div>
+</body>

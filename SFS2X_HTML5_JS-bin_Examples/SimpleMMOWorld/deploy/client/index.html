@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="author" content="Bax">
+	<title>SmartFoxServer 2X | Simple MMO World</title>
+
+	<!-- Reset styles -->
+	<link href="css/reset.css" rel="stylesheet" type="text/css" />
+
+	<!-- Load jQuery and jQWidgets frameworks -->
+	<link href="libs/jqwidgets/styles/jqx.base.css" rel="stylesheet" type="text/css" />
+	<link href="libs/jqwidgets/styles/jqx.summer.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="libs/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxcore.js"></script>
+
+	<!-- Load createJS and TweenLite frameworks -->
+	<script type="text/javascript" src="libs/easeljs-0.7.1.min.js"></script>
+	<script type="text/javascript" src="libs/preloadjs-0.4.1.min.js"></script>
+	<script type="text/javascript" src="libs/TweenLite.min.js"></script>
+
+	<!-- Set custom styles -->
+	<link href="css/main.css" rel="stylesheet" type="text/css" />
+
+	<!-- Load jQWidgets' required widgets -->
+	<script type="text/javascript" src="libs/jqwidgets/jqxbuttons.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxwindow.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxscrollbar.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxpanel.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxnumberinput.js"></script>
+
+	<!-- Load SFS2X JS API -->
+	<script type="text/javascript" src="libs/sfs2x-api-1.7.2.js"></script>
+
+	<!-- Load main script and other classes -->
+	<script type="text/javascript" src="scripts/main.js"></script>
+	<script type="text/javascript" src="scripts/Avatar.js"></script>
+
+	<!-- Initialize user interface -->
+	<script type="text/javascript">
+		$(document).ready(function () {
+
+			var theme = "summer";
+
+			// Init connection/login view widgets
+			$("#loginBt").jqxButton({width:100, theme:theme});
+			$("#sendPublicMsgBt").jqxButton({width:100, theme:theme});
+
+			// Add event listeners
+			$("#loginBt").click(onLoginBtClick);
+			$("#minimap").click(onMinimapClick);
+			$("#sendPublicMsgBt").click(onSendPublicMessageBtClick);
+	    });
+	</script>
+</head>
+
+<body onLoad="init()">
+	<div id="header">
+		<img src="images/logo.png"/>
+		<p id="title">SmartFoxServer 2X Examples<br/><strong>Simple MMO World</strong><br/>&copy; 2017 gotoAndPlay()</p>
+	</div>
+
+	<div id="main" class="group">
+		<!-- Preloading view -->
+		<div id="preload" class="hidden viewStack panel">
+			<p>Loading assets...</p>
+		</div>
+
+		<!-- Login view -->
+		<div id="login" class="hidden viewStack panel">
+			<h2>Connect &amp; Login</h2>
+			<div class="group vSep10">
+				<input type="text" id="usernameIn" class="textInput" placeholder="Your username"/>
+				<input type="button" id="loginBt" value="Login"/>
+			</div>
+			<div id="errorLb" class="error invisible vSep10">&nbsp;</div>
+		</div>
+
+		<!-- Room join view -->
+		<div id="join" class="hidden viewStack panel">
+			<h2>Join MMORoom</h2>
+			<img id="minimap" src="images/minimap.png"/>
+			<p class="smallNote" align="center">Click on the map to join it</p>
+		</div>
+
+		<!-- Game view -->
+		<div id="game" class="hidden viewStack">
+			<canvas id="map" width="1400" height="745" class="vSep10"></canvas>
+			<div>
+				<input type="text" id="publicMsgIn" class="textInput" placeholder="Type your message &amp; hit send" style="width: 463px;"/>
+				<input type="button" id="sendPublicMsgBt" value="Send"/>
+				<span class="aoiNote">The red rectangle indicates the Area of Interest set for this MMORoom</span>
+			</div>
+		</div>
+	</div>
+
+	<div id="footer">
+		<p align="center">This example application makes use of <a href="http://www.jqwidgets.com/" target="_blank">jQWidgets UI Toolkit</a>.
+			The widgets are distributed for learning purposes only and you are not entitled to use them in a commercial product.
+			If needed, please visit the <b>jQWidgets</b> website to acquire a proper license.</p>
+	</div>
+
+</body>
+</html>

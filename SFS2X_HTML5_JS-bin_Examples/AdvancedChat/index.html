@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta name="author" content="Bax">
+	<title>SmartFoxServer 2X | Advanced Chat</title>
+
+	<!-- Reset styles -->
+	<link href="css/reset.css" rel="stylesheet" type="text/css" />
+
+	<!-- Load jQuery and jQWidgets frameworks -->
+	<link href="libs/jqwidgets/styles/jqx.base.css" rel="stylesheet" type="text/css" />
+	<link href="libs/jqwidgets/styles/jqx.summer.css" rel="stylesheet" type="text/css" />
+	<script type="text/javascript" src="libs/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxcore.js"></script>
+
+	<!-- Set custom styles -->
+	<link href="css/main.css" rel="stylesheet" type="text/css" />
+
+	<!-- Load jQWidgets' required widgets -->
+	<script type="text/javascript" src="libs/jqwidgets/jqxbuttons.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxscrollbar.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxlistbox.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxexpander.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxnavigationbar.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxwindow.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxcheckbox.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxnumberinput.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxtabs.js"></script>
+	<script type="text/javascript" src="libs/jqwidgets/jqxpanel.js"></script>
+
+	<!-- Load SFS2X JS API -->
+	<script type="text/javascript" src="libs/sfs2x-api-1.7.2.js"></script>
+
+	<!-- Load main script -->
+	<script type="text/javascript" src="scripts/main.js"></script>
+
+	<!-- Initialize user interface -->
+	<script type="text/javascript">
+		$(document).ready(function () {
+
+			var theme = "summer";
+
+			// Init main widgets
+			$("#connectBt").jqxButton({width:100, theme:theme});
+			$("#loginBt").jqxButton({width:100, theme:theme, disabled:true});
+			$("#logoutBt").jqxButton({width:100, theme:theme, disabled:true});
+			$("#disconnectBt").jqxButton({width:100, theme:theme, disabled:true});
+			$("#sideBar").jqxNavigationBar({width:240, height:510, sizeMode:"fitAvailableHeight", theme:theme});
+			$("#roomList").jqxListBox({source:[], width:238, height:265, theme:theme});
+			$("#createRoomBt").jqxButton({width:112, theme:theme, disabled:true});
+			$("#leaveRoomBt").jqxButton({width:111, theme:theme, disabled:true});
+			$("#switchUserRoleBt").jqxButton({width:111, theme:theme, disabled:true});
+			$("#setRoomNameBt").jqxButton({width:76, theme:theme, disabled:true});
+			$("#setRoomPwdBt").jqxButton({width:76, theme:theme, disabled:true});
+			$("#newRoomSizeIn").jqxNumberInput({width:75, height:20, decimalDigits:0, spinButtons:true, decimal:10, min:2, disabled:true, inputMode:"simple", theme:theme});
+			$("#setRoomSizeBt").jqxButton({width:76, theme:theme, disabled:true});
+			$("#userList").jqxListBox({source:[], width:238, height:178, theme:theme});
+			$("#chatAreaPn").jqxPanel({width:578, height:400, theme:theme, disabled:true, autoUpdate:true});
+			$("#sendMsgBt").jqxButton({width:100, theme:theme, disabled:true});
+			$("#setTopicBt").jqxButton({width:100, theme:theme, disabled:true});
+			$("#setUserNickBt").jqxButton({width:76, theme:theme, disabled:true});
+			$("#kickBt").jqxButton({width:112, theme:theme, disabled:true});
+			$("#banBt").jqxButton({width:111, theme:theme, disabled:true});
+			$("#privChatAreaPn").jqxPanel({width:226, height:135, theme:theme, disabled:true, autoUpdate:true});
+			$("#sendPrivMsgBt").jqxButton({width:76, theme:theme, disabled:true});
+			$("#deselectUserBt").jqxButton({width:24, theme:theme, disabled:true});
+
+			// Init Room creation window widgets
+			$("#createRoomWin").jqxWindow({width:500, height:320, isModal:true, autoOpen:false, resizable:false, draggable:false, cancelButton:$("#cancelBt"), theme:theme});
+			$("#createRoomWinTabs").jqxTabs({width:"100%", height:250, theme:"classic"});
+			$("#doCreateRoomBt").jqxButton({width:100, theme:theme});
+			$("#autoJoinCb").jqxCheckBox({width:100, height:24, checked:true, theme:theme});
+			$("#cancelBt").jqxButton({width:100, theme:theme});
+			$("#isGameCb").jqxCheckBox({width:24, height:24, theme:theme});
+			$("#maxUsersIn").jqxNumberInput({width:80, height:20, decimalDigits:0, spinButtons:true, decimal:10, min:2, inputMode:"simple", theme:theme});
+			$("#maxSpectatorsIn").jqxNumberInput({width:80, height:20, decimalDigits:0, spinButtons:true, decimal:0, inputMode:"simple", theme:theme});
+			$("#maxVariablesIn").jqxNumberInput({width:80, height:20, decimalDigits:0, spinButtons:true, decimal:5, inputMode:"simple", theme:theme});
+			$("#isNameChangeAllowedCb").jqxCheckBox({width:24, height:24, checked:true, theme:theme});
+			$("#isPwdStateChangeAllowedCb").jqxCheckBox({width:24, height:24, checked:true, theme:theme});
+			$("#isPublicMessageAllowedCb").jqxCheckBox({width:24, height:24, checked:true, theme:theme});
+			$("#isResizeAllowedCb").jqxCheckBox({width:25, height:24, checked:true, theme:theme});
+
+			// Add event listeners
+			$("#connectBt").click(onConnectBtClick);
+			$("#loginBt").click(onLoginBtClick);
+			$("#logoutBt").click(onLogoutBtClick);
+			$("#disconnectBt").click(onDisconnectBtClick);
+			$("#roomList").bind("select", onRoomSelected);
+			$("#userList").bind("select", onUserSelected);
+			$("#createRoomBt").click(onCreateRoomBtClick);
+			$("#leaveRoomBt").click(onLeaveRoomBtClick);
+			$("#switchUserRoleBt").click(onSwitchRoleBtClick);
+			$("#setRoomNameBt").click(onSetRoomNameBtClick);
+			$("#setRoomPwdBt").click(onSetRoomPwdBtClick);
+			$("#setRoomSizeBt").click(onSetRoomSizeBtClick);
+			$("#doCreateRoomBt").click(onDoCreateRoomBtClick);
+			$("#sendMsgBt").click(onSendPublicMessageBtClick);
+			$("#setTopicBt").click(onSetTopicBtClick);
+			$("#setUserNickBt").click(onSetUserNickBtClick);
+			$("#kickBt").click(onKickBtClick);
+			$("#banBt").click(onBanBtClick);
+			$("#sendPrivMsgBt").click(onSendPrivateMessageBtClick);
+			$("#deselectUserBt").click(onDeselectUserBtClick);
+	    });
+	</script>
+
+</head>
+
+<body onLoad="init()">
+	<div id="header">
+		<img src="images/logo.png"/>
+		<p id="title">SmartFoxServer 2X Examples<br/><strong>Advanced Chat</strong><br/>&copy; 2017 gotoAndPlay()</p>
+	</div>
+	<div id="controls" class="group">
+		<input type="button" id="connectBt" value="Connect"/>
+		<input type="text" id="usernameIn" class="textInput" disabled="true" placeholder="Your username"/>
+		<input type="button" id="loginBt" value="Login"/>
+		<input type="button" id="logoutBt" value="Logout"/>
+		<input type="button" id="disconnectBt" value="Disconnect"/>
+		<label id="lagLb">&nbsp;</label>
+	</div>
+	<div id="main" class="group">
+		<div id="chatbox">
+			<p id="chatTopicLb" class="chatTopic"></p>
+			<p class="sectionTitle">Chat</p>
+			<div id="chatAreaPn"></div>
+			<div class="chatControls">
+				<div>
+					<input type="text" id="publicMsgIn" class="textInput" disabled="true" placeholder="Type your message &amp; hit send" style="width: 463px;"/>
+					<input type="button" id="sendMsgBt" value="Send"/>
+				</div>
+				<div class="vSeparateTop">
+					<label>Chat topic:</label>
+					<input type="text" id="roomTopicIn" class="textInput" disabled="true"/>
+					<input type="button" id="setTopicBt" value="Set"/>
+				</div>
+			</div>
+		</div>
+		<div id="sideBar">
+			<!--Header-->
+			<div>Rooms</div>
+			<!--Content-->
+			<div>
+				<div id="roomList"></div>
+				<div class="sideBarControls">
+					<div>
+						<input type="button" id="createRoomBt" value="Create Room"/>
+						<input type="button" id="leaveRoomBt" value="Leave Room"/>
+					</div>
+					<div class="vSeparate vSeparateTop">
+						<p id="roleLb" class="floating">&nbsp;</p>
+						<input class="floating" type="button" id="switchUserRoleBt" value="Switch role"/>
+					</div>
+					<p id="roomControlsTitle">Room controls</p>
+					<div>
+						<input type="text" id="newRoomNameIn" class="textInput small" disabled="true" placeholder="New name"/>
+						<input type="button" id="setRoomNameBt" value="Change"/>
+					</div>
+					<div class="vSeparateTop">
+						<input type="text" id="newPasswordIn" class="textInput small" disabled="true" placeholder="New password"/>
+						<input type="button" id="setRoomPwdBt" value="Change"/>
+					</div>
+					<div class="vSeparateTop">
+						<span id="newRoomSizeLabel" class="floating">New size:</span>
+						<div class="floatingSep" id="newRoomSizeIn" class="numInput "></div>
+						<input class="floating" type="button" id="setRoomSizeBt" value="Change"/>
+					</div>
+				</div>
+			</div>
+
+			<!--Header-->
+			<div>Users</div>
+			<!--Content-->
+			<div>
+				<div class="sideBarControls">
+					<input type="text" id="userNickIn" class="textInput small" disabled="true" placeholder="My nickname"/>
+					<input type="button" id="setUserNickBt" value="Set"/>
+				</div>
+				<div id="userList"></div>
+				<div class="sideBarControls">
+					<p class="smallNote">Moderation controls</p>
+					<input type="button" id="kickBt" value="Kick"/>
+					<input type="button" id="banBt" value="Ban"/>
+				</div>
+				<div class="sideBarControls">
+					<p class="smallNote">Private chat <span id="privChatUserLb"></span></p>
+					<div id="privChatAreaPn"></div>
+					<div class="vSeparateTop">
+						<input type="text" id="privateMsgIn" class="textInput smaller" disabled="true" placeholder="Type your PM"/>
+						<input type="button" id="sendPrivMsgBt" value="Send"/>
+						<input type="button" id="deselectUserBt" value="X"/>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="footer">
+		<p>This example application makes use of <a href="http://www.jqwidgets.com/" target="_blank">jQWidgets UI Toolkit</a>.
+			The widgets are distributed for learning purposes only and you are not entitled to use them in a commercial product.
+			If needed, please visit the <b>jQWidgets</b> website to acquire a proper license.</p>
+	</div>
+
+	<!-- Room creation popup window -->
+	<div id="createRoomWin">
+		<div id="createRoomWinHeader">
+			<span><img src="images/edit.png" class="icon"/><strong>Create Room</strong></span>
+		</div>
+		<div style="overflow: hidden;" id="createRoomWinContent">
+			<div id="createRoomWinTabs">
+				<ul>
+					<li>Basic</li>
+					<li>Permissions</li>
+				</ul>
+				<div>
+					<div class="item"><label>Name:</label><input type="text" id="roomNameIn" class="textInput"/></div>
+					<div class="item"><label>Password:</label><input type="text" id="passwordIn" class="textInput"/></div>
+					<div class="item"><label>Group:</label><input type="text" id="groupIn" class="textInput" value="default"/></div>
+					<div class="item"><label>Is game:</label><div id="isGameCb" class="checkBox"></div></div>
+					<div class="item"><label>Max users:</label><div id="maxUsersIn" class="numInput"></div></div>
+					<div class="item"><label>Max spectators:</label><div id="maxSpectatorsIn" class="numInput"></div></div>
+					<div class="item"><label>Max variables:</label><div id="maxVariablesIn" class="numInput"></div></div>
+				</div>
+				<div>
+					<p class="smallNote">Room settings that can be changed at runtime:</p>
+					<div class="item"><label>Name:</label><div id="isNameChangeAllowedCb" class="checkBox"></div></div>
+					<div class="item"><label>Password state:</label><div id="isPwdStateChangeAllowedCb" class="checkBox"></div></div>
+					<div class="item"><label>Chat enabled:</label><div id="isPublicMessageAllowedCb" class="checkBox"></div></div>
+					<div class="item"><label>Capacity:</label><div id="isResizeAllowedCb" class="checkBox"></div></div>
+				</div>
+			</div>
+			<div id="createRoomWinControls">
+				<input type="button" id="doCreateRoomBt" value="Create"/>
+				<div id="autoJoinCb" class="checkBox"><span>Auto-join</span></div>
+				<input type="button" id="cancelBt" value="Cancel"/>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

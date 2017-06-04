@@ -1,0 +1,260 @@
+@charset "UTF-8";
+
+body {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: small;
+	line-height: 1.2em;
+	color: #333333;
+}
+
+#header, #main, #footer {
+	width: 860px;
+	margin: 0 auto;
+	padding: 20px 0;
+	border-bottom: solid 1px #CCCCCC;
+}
+
+#header #title {
+	float: right;
+	text-align: right;
+	font-size: 80%;
+}
+
+#main {
+	min-height: 580px;
+}
+
+.viewStack {
+	margin: 0 auto;
+	min-height: 570px;
+}
+
+#login {
+	min-height: 0;
+	margin-top: 150px;
+	width: 400px;
+	background-color: #EEEEEE;
+	border-radius: 10px;
+	padding: 10px;
+}
+
+#footer {
+	font-size: 80%;
+	padding: 5px 0;
+	text-align: justify;
+	border-bottom: none;
+}
+
+/* Floats self-clearing */
+
+.group:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+/* for IE6 */
+* html .group {
+	height: 1%;
+}
+
+/* for IE7 */
+*:first-child+html .group {
+	min-height: 1px;
+}
+
+
+/* BASIC STYLES */
+
+a:link, a:visited {
+	color: #3399FF;
+	font-weight: normal;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #3366FF;
+}
+
+a img {
+	border: none;
+}
+
+h1 {
+	font-weight: normal;
+	font-size: 150%;
+	color: #CC0000;
+	padding-bottom: 20px;
+	line-height: 0.8em;
+}
+
+h2 {
+	font-weight: bold;
+	font-size: 120%;
+	color: #666666;
+	padding: 0px 0 10px 0;
+}
+
+label {
+	font-weight: bold;
+}
+
+.smallNote {
+	font-size: 80%;
+	color: #999999;
+}
+
+input.textInput {
+	font-size: 100%;
+	border: 1px solid #AAAAAA;
+	border-radius: 3px;
+	background-color: #FCFCFC;
+	height: 20px;
+	padding-left: 4px;
+	width: 150px;
+}
+
+input.chat {
+	width: 360px;
+}
+
+input.textInput[disabled] {
+	border-color: #DCDCDC;
+	background-color: #F9F9F9;
+	color: #CCCCCC;
+}
+
+hr {
+	border: 0;
+	width: 100%;
+	height: 1px;
+	background-color: #BBBBBB;
+}
+
+.vSep10 {
+	margin-bottom: 10px;
+}
+
+.vSep20 {
+	margin-bottom: 20px;
+}
+
+.hidden {
+	opacity: 0;
+}
+
+.invisible {
+	display: none;
+}
+
+.error {
+	color: #CC0000;
+	padding-top: 10px;
+}
+
+.listControls {
+	margin: 10px 0 0 0;
+}
+
+.listControls > *:not(:first-child) {
+	margin-left: 5px;
+}
+
+.listControls input.textInput {
+	background-color: #FFFFFF;
+}
+
+.listControls.hr {
+	border-top: 1px solid #BBBBBB;
+	padding-top: 10px;
+	margin-top: 20px;
+}
+
+#buddyInfoWin * {
+	float: left;
+}
+
+#buddyInfoWin .item {
+	padding-bottom: 5px;
+	width: 100%;
+}
+
+#buddyInfoWin .item label {
+	width: 100px;
+	padding-top: 4px;
+	font-weight: normal;
+}
+
+#buddyInfoWin .item label.strong {
+	font-weight: bold;
+}
+
+#buddyInfoWin .item input {
+	width: 200px;
+}
+
+#buddyInfoWin .item input.textInput {
+	background-color: #FFFFFF;
+}
+
+#buddyInfoWin .item .formButton {
+	margin-left: 10px;
+}
+
+#buddyInfoWin .item .checkBox {
+	margin-top: 6px;
+}
+
+#buddyInfoWin hr {
+	margin-top: -5px;
+}
+
+img.tabIcon {
+	vertical-align: middle;
+	padding-right: 5px;
+}
+
+.chatAreaElement {
+	padding: 3px;
+	font-size: 90%;
+}
+
+.chatAreaElement em {
+	color: #BBBBBB;
+}
+
+/* OVERRIDE JQWIDGETS BASIC STYLES */
+
+#buddyList.jqx-listbox {
+	font-size: 90%;
+}
+
+.jqx-window-content {
+	background-color: #F9F9F9;
+}
+
+.jqx-listitem-state-normal .itemTitle {
+	color: #FE4200;
+}
+
+.jqx-listitem-state-hover .itemTitle {
+	color: #FFFFFF;
+}
+
+.jqx-listitem-state-selected .itemTitle {
+	color: #FFFFFF;
+}
+
+.jqx-listitem-state-normal .itemTitle img {
+	padding-right: 5px;
+}
+
+.jqx-listbox .itemSub {
+	font-size: 90%;
+}
+
+.jqx-tabs-content {
+	padding: 5px;
+}

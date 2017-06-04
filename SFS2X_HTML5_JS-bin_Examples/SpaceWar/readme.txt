@@ -1,0 +1,3 @@
+The SpaceWar example comes with an Extension provided in two versions: Java and JavaScript (SpaceWar and SpaceWar-JS respectively). The two versions are contained in the "deploy/extensions/" folder.
+You can choose which one to use by enabling the corresponding configuration in the Zone configuration file under "deploy/zones/" (please note that you will need to set both the Room and Zone configuration).
+The source code of the Java Extension is available in the "source" folder.

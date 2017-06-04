@@ -1,0 +1,196 @@
+@charset "UTF-8";
+
+body {
+	font-family: Verdana, Geneva, sans-serif;
+	font-size: small;
+	line-height: 1.2em;
+	color: #333333;
+}
+
+#header, #main, #footer {
+	width: 1400px;
+	margin: 0px auto;
+	padding: 20px 0;
+	border-bottom: solid 1px #CCCCCC;
+}
+
+#header #title {
+	float: right;
+	text-align: center;
+	font-size: 80%;
+}
+
+#main {
+	min-height: 520px;
+}
+
+.viewStack {
+	margin: 0 auto;
+	min-height: 520px;
+}
+
+#footer {
+	font-size: 80%;
+	padding: 5px 0;
+	text-align: justify;
+	border-bottom: none;
+}
+
+/* Views */
+
+.panel {
+	min-height: 0;
+	background-color: #EEEEEE;
+	border-radius: 10px;
+	padding: 10px;
+}
+
+#preload {
+	width: 280px;
+	padding: 20px 20px;
+	margin-top: 220px;
+}
+
+#login {
+	width: 280px;
+	padding: 50px 30px;
+	margin-top: 150px;
+}
+
+#usernameIn {
+	width: 168px;
+}
+
+#join {
+	width: 300px;
+	padding: 30px 30px;
+	margin-top: 100px;
+}
+
+#minimap {
+	cursor: pointer;
+	border-radius: 6px;
+	margin-bottom: 10px;
+}
+
+.aoiNote {
+	 float: right;
+	 color: #CC0000;
+}
+
+/* Floats self-clearing */
+
+.group:after {
+	content: ".";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+}
+
+/* for IE6 */
+* html .group {
+	height: 1%;
+}
+
+/* for IE7 */
+*:first-child+html .group {
+	min-height: 1px;
+}
+
+
+/* BASIC STYLES */
+
+a:link, a:visited {
+	color: #3399FF;
+	font-weight: normal;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #3366FF;
+}
+
+a img {
+	border: none;
+}
+
+h1 {
+	font-weight: normal;
+	font-size: 150%;
+	color: #CC0000;
+	padding-bottom: 20px;
+	line-height: 0.8em;
+}
+
+h2 {
+	font-weight: bold;
+	font-size: 120%;
+	color: #666666;
+	padding: 0px 0 10px 0;
+}
+
+label {
+	font-weight: bold;
+}
+
+.smallNote {
+	font-size: 80%;
+	color: #999999;
+}
+
+input.textInput {
+	font-size: 100%;
+	border: 1px solid #AAAAAA;
+	border-radius: 3px;
+	background-color: #FCFCFC;
+	height: 20px;
+	padding-left: 4px;
+}
+
+input.small {
+	width: 140px;
+}
+
+input.smaller {
+	width: 110px;
+}
+
+input.textInput[disabled] {
+	border-color: #DCDCDC;
+	background-color: #F9F9F9;
+	color: #CCCCCC;
+}
+
+.floatItems * {
+	float: left;
+}
+
+.floatItems label,
+.floatItems p {
+	margin-right: 5px;
+	line-height: 24px;
+}
+
+.hidden {
+	opacity: 0;
+}
+
+.invisible {
+	display: none;
+}
+
+.vSep10 {
+	margin-bottom: 10px;
+}
+
+.vSep20 {
+	margin-bottom: 20px;
+}
+
+.error {
+	color: #CC0000;
+	padding-top: 10px;
+}
+
+/* OVERRIDE JQWIDGETS BASIC STYLES */
