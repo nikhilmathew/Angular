@@ -6,11 +6,13 @@ import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
 import { GameComponent } from './game/game.component';
+import { Game2Component } from './game2/game2.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    GameComponent
+    GameComponent,
+    Game2Component
   ],
   imports: [
     BrowserModule,
