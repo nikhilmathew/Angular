@@ -16,7 +16,8 @@ export class Game2Component implements OnInit {
   answerclicked: boolean = false;
   currentquestion: number = 0;
   maxquestion: number = 12;
-  currentQuestionClickTime:number;
+  currentQuestionClickTime: any;
+  questionStartTime: number;
   singleobj: any = {
     question_text: "question",
     option_a: "option A",
@@ -41,10 +42,10 @@ export class Game2Component implements OnInit {
       if (t > 10) {
         this.subscription.unsubscribe()
         console.log("time's Up .. next question coming up")
-        this.scoreCalculate(31)
-        setTimeout(()=>{
-        this.showAQuestion()
-        },3000)
+        this.scoreCalculate("infinity")
+        setTimeout(() => {
+          this.showAQuestion()
+        }, 3000)
       } else {
         this.time = t;
         console.log(this.time, t)
@@ -56,6 +57,7 @@ export class Game2Component implements OnInit {
     if (this.subscription)
       this.subscription.unsubscribe()
     this.startTimer()
+    this.questionStartTime = performance.now();
     this.answerclicked = false;
     if (this.currentquestion < this.obj.length) {
       this.singleobj = this.obj[this.currentquestion++];
@@ -71,13 +73,13 @@ export class Game2Component implements OnInit {
     this.currentQuestionClickTime = performance.now()
     console.log(answer)
     this.subscription.unsubscribe()
-    this.scoreCalculate(this.currentQuestionClickTime);
+    this.scoreCalculate(this.currentQuestionClickTime - this.questionStartTime);
     setTimeout(() => {
 
       this.showAQuestion()
     }, 3000);
   }
   scoreCalculate(time) {
-    console.log(time)
+    console.log("took " + time + " ms to click an answer")
   }
 }
