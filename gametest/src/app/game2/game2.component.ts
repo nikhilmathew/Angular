@@ -11,10 +11,15 @@ import { TimerObservable } from "rxjs/observable/TimerObservable";
 export class Game2Component implements OnInit {
   game_type: string = "b"
   round_type: string //batting or bowling
-  private match_time: number = 5
+  private match_time: number = 10
   timer: any;
   obj: any;
-  scoring_rules: any;
+  scoring_rules: any = {
+    six: 0,
+    four: 0,
+    two: 0
+
+  }
   time: number;
   private subscription: Subscription;
 
@@ -34,7 +39,8 @@ export class Game2Component implements OnInit {
   }
   bot_responses: any;
   current_bot_response: any;
-
+  halfpointreached: boolean = false;
+  usergavecorrectanswer = false;
 
   constructor(private ds: DataService) { }
 
@@ -43,7 +49,16 @@ export class Game2Component implements OnInit {
       console.log(data)
       this.obj = data.questions;
       this.bot_responses = data.bot_responses
-      this.scoring_rules = data.game_rules
+      data.game_rules.forEach(rule => {
+        console.log(rule)
+        if (rule.points == 6)
+          this.scoring_rules.six = rule.time_allowed
+        else if (rule.points == 4)
+          this.scoring_rules.four = rule.time_allowed
+        else if (rule.points == 2)
+          this.scoring_rules.two = rule.time_allowed
+      });
+      console.log(this.scoring_rules)
       this.timer = TimerObservable.create(1, 1000)
     })
   }
@@ -56,7 +71,7 @@ export class Game2Component implements OnInit {
         this.scoreCalculate(15000, this.current_bot_response.time)
         setTimeout(() => {
           this.showAQuestion()
-        }, 3000)
+        }, 1000)
       } else {
         this.time = t;
         console.log(this.time, t)
@@ -68,60 +83,97 @@ export class Game2Component implements OnInit {
     if (this.subscription)
       this.subscription.unsubscribe()
     this.startTimer()
-
     this.questionStartTime = performance.now();
     this.botanswered = false;
     this.answerclicked = false;
-    if (this.currentquestion < this.obj.length) {// diverge from here for batting and bowling
+    this.usergavecorrectanswer = false;
+
+    if (this.currentquestion < this.obj.length / 2) {// diverge from here for batting and bowling
       if (this.game_type == "b") {
         this.current_bot_response = this.bot_responses[this.currentquestion]
         this.bot_action()
+      } else {
+        // sfs player here or maybe independant
+      }
+      this.singleobj = this.obj[this.currentquestion++];
+      console.log(this.currentquestion)
+      this.halfpointreached = true
+    } else if (this.currentquestion == 6 && this.halfpointreached) {
+      this.subscription.unsubscribe()
+      this.halfpointreached = false;
+      console.log("first half over")
+      setTimeout(() => {
+        console.log("break over begin second round of quiz")
+        this.showAQuestion();
+      }, 5000)
+
+    } else if (this.currentquestion < this.obj.length) {
+      if (this.game_type == "b") {
+        this.current_bot_response = this.bot_responses[this.currentquestion]
+        this.bot_action()
+        console.log("bot action part 2")
+      } else {
+        // sfs player here or maybe independant
       }
       this.singleobj = this.obj[this.currentquestion++];
       console.log(this.currentquestion)
     } else {
+      //if()
       console.log(this.obj.length, "no more questions")
       this.subscription.unsubscribe()
     }
-
   }
+
   bot_action() { // write bot answering logic here only timing logic written as of now
     setTimeout(() => {
       console.log(this.current_bot_response)
       this.botanswered = true;
-      console.log("bot gives " + this.current_bot_response.answer + " answer")
+      console.log(this.currentquestion+" bot gives " + this.current_bot_response.answer + " answer")
       if (this.botanswered && this.answerclicked) {
         this.scoreCalculate(this.currentQuestionClickTime - this.questionStartTime, this.current_bot_response.time)
         setTimeout(() => {
           this.showAQuestion()
-        }, 3000);
+        }, 1000);
       }
     }, this.current_bot_response.time)
-
   }
+
   selectAnswer(answer) {
     this.answerclicked = true;
     this.currentQuestionClickTime = performance.now()
     console.log(answer)
-
+    if (answer == this.singleobj.correct_answer) {
+      console.log(this.currentquestion+" user clicked correct answer")
+      this.usergavecorrectanswer = true;
+    }
     if (this.botanswered && this.answerclicked) {
       //this.subscription.unsubscribe()
       this.scoreCalculate(this.currentQuestionClickTime - this.questionStartTime, this.current_bot_response.time);
       setTimeout(() => {
         this.showAQuestion()
-      }, 3000);
+      }, 1000);
     }
-
   }
+
   scoreCalculate(timePlayer, timeOpponent) {
-    //this.scoring_rules
-    console.log("player time :" + timePlayer, "opponent time :" + timeOpponent)
-    if (timePlayer < timeOpponent) {
+    console.log("player time :" + timePlayer, "opponent time :" + timeOpponent, this.scoring_rules)
+    if (timePlayer < timeOpponent && this.usergavecorrectanswer) {
       console.log("player answered first by " + (timeOpponent - timePlayer) + " ms")
-      
+      console.log(timePlayer)
+      console.log(this.currentquestion+" user gave correct answer")
+      if (timePlayer < this.scoring_rules.six)
+        console.log("player hit a six")
+      else if (timePlayer < this.scoring_rules.four)
+        console.log("player hit a four")
+      else if (timePlayer < this.scoring_rules.two)
+        console.log("player hit a two")
+      else {
+        console.log("1 run only")
+      }
+    } else if (!this.usergavecorrectanswer && this.current_bot_response.answer) {
+      console.log(this.currentquestion+ " opponent answered correctly and first by " + (timePlayer - timeOpponent) + " ms")
     } else {
-      console.log("opponent answered first by " + (timePlayer - timeOpponent) + " ms")
+      console.log(this.currentquestion+" no one gave correct answer")
     }
   }
-
 }
