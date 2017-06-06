@@ -10,6 +10,7 @@ import { TimerObservable } from "rxjs/observable/TimerObservable";
   styleUrls: ['./game2.component.css']
 })
 export class Game2Component implements OnInit {
+  showCommentary:any= ["show-c"]
   game_type: string = "b"
   round_type: string //batting or bowling
   private match_time: number = 10
@@ -66,8 +67,6 @@ export class Game2Component implements OnInit {
 
   }
   startTimer() {
-
-
     this.subscription = this.timer.subscribe(t => {
       if (t > this.match_time) {
         this.subscription.unsubscribe()
@@ -139,7 +138,7 @@ export class Game2Component implements OnInit {
         this.scoreCalculate(this.currentQuestionClickTime - this.questionStartTime, this.current_bot_response.time)
         setTimeout(() => {
           this.showAQuestion()
-        }, 1000);
+        }, 1000)
       }
     }, this.current_bot_response.time)
   }
