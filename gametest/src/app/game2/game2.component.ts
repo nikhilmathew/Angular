@@ -1,3 +1,4 @@
+import { SfsService } from './../sfs.service';
 import { Component, OnInit, } from '@angular/core';
 import { DataService } from "app/data.service";
 import { Subscription } from "rxjs/Subscription";
@@ -42,7 +43,7 @@ export class Game2Component implements OnInit {
   halfpointreached: boolean = false;
   usergavecorrectanswer = false;
 
-  constructor(private ds: DataService) { }
+  constructor(private ds: DataService,private sfsService:SfsService) { }
 
   ngOnInit() {
     this.ds.getQuizData().subscribe((data) => {
@@ -61,8 +62,11 @@ export class Game2Component implements OnInit {
       console.log(this.scoring_rules)
       this.timer = TimerObservable.create(1, 1000)
     })
+    this.sfsService.connectSmartFox();
+
   }
   startTimer() {
+
 
     this.subscription = this.timer.subscribe(t => {
       if (t > this.match_time) {
@@ -80,6 +84,8 @@ export class Game2Component implements OnInit {
   }
 
   showAQuestion() {
+    
+    //this.sfsService.loginSmartFox();
     if (this.subscription)
       this.subscription.unsubscribe()
     this.startTimer()

@@ -11,7 +11,7 @@ export class AppService {
     testSFX() {
         let config: any = {};
         config.host ='localhost';// "stg-sf.sportsunity.co";
-        config.port = 8080;
+        config.port = 8888;
         config.useSSL = false;
         config.zone = "BasicExamples ";
         config.debug = true;
