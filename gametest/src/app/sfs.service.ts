@@ -5,6 +5,7 @@ declare var SFS2X: any;
 export class SfsService implements OnInit {
     roomId:string;
     sfs: any;
+
     ngOnInit() {
         //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
         //Add 'implements OnInit' to the class.
@@ -132,7 +133,7 @@ export class SfsService implements OnInit {
     }
     sendGameRoomRequest() {
         var object: any = {}
-        object.rg = "g1";
+        object.rg = "g2";
         function randomString(length, chars) {
             var result = '';
             for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
@@ -159,6 +160,7 @@ export class SfsService implements OnInit {
     onRoomJoined(evtParams) {
             console.log("Room joined successfully: " + evtParams.room);
             this.roomId = evtParams.room
+            // call question data here
         }
     sendReady(evtParams:any) {
         var room = evtParams.room;
