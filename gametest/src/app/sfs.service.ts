@@ -1,17 +1,19 @@
 import { OnInit } from '@angular/core';
+import { Subject } from "rxjs";
 declare var window: any;
 declare var SFS2X: any;
 
 export class SfsService implements OnInit {
-    roomId:string;
+    roomId: string;
     sfs: any;
-
+    RoomJoinedEvent = new Subject<any>();
+    UserCountChangedEvent = new Subject<any>();
     ngOnInit() {
         //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
         //Add 'implements OnInit' to the class.
         this.initializeSmartFoxConnection();
     }
-    
+
     initializeSmartFoxConnection() {
         let config: any = {}
         config.host = "192.168.0.11";
@@ -36,7 +38,7 @@ export class SfsService implements OnInit {
         this.sfs.addEventListener(SFS2X.SFSEvent.ROOM_CREATION_ERROR, onRoomCreationError, this);
         this.sfs.addEventListener(SFS2X.SFSEvent.ROOM_JOIN, this.onRoomJoined, this);
         this.sfs.addEventListener(SFS2X.SFSEvent.ROOM_JOIN_ERROR, onRoomJoinError, this);
-        this.sfs.addEventListener(SFS2X.SFSEvent.USER_COUNT_CHANGE, this.sendReady, this);
+        this.sfs.addEventListener(SFS2X.SFSEvent.USER_COUNT_CHANGE, this.onUserCountChange, this);
         this.sfs.addEventListener(SFS2X.SFSEvent.USER_ENTER_ROOM, onUserEnterRoom, this);
         this.sfs.addEventListener(SFS2X.SFSEvent.USER_EXIT_ROOM, onUserExitRoom, this);
 
@@ -67,39 +69,27 @@ export class SfsService implements OnInit {
             console.log("Login failure: " + evtParams.errorMessage);
         }
         function onExtensionResponse(evtParams) {
-            console.log(evtParams);
+            console.log("mera req event" + evtParams);
         }
         function onLogin(evtParams) {
             console.log("Login successful!");
         }
         function onRoomCreated(evtParams) {
-            console.log("Room created: " + evtParams.room);
+            console.log("Room created: " + evtParams.room);// called when room is created on game req
+            console.log(evtParams)
         }
 
         function onRoomCreationError(evtParams) {
             console.log("Room creation failure: " + evtParams.errorMessage);
         }
-        function onRoomJoined(evtParams) {
-            console.log("Room joined successfully: " + evtParams.room);
-        }
 
         function onRoomJoinError(evtParams) {
             console.log("Room joining failed: " + evtParams.errorMessage);
         }
-        function onUserCountChange(evtParams,self=this) {
-            var room = evtParams.room;
-            var uCount = evtParams.uCount;
-            var sCount = evtParams.sCount;
-            if (uCount == 2) {
-                //call ready request
-                              
-            }
-            console.log("Room: " + room.name + " now contains " + uCount + " users and " + sCount + " spectators");
-        }
         function onUserEnterRoom(evtParams) {
             var room = evtParams.room;
             var user = evtParams.user;
-             
+
             console.log("User " + user.name + " just joined Room " + room.name);
         }
         function onUserExitRoom(evtParams) {
@@ -132,6 +122,7 @@ export class SfsService implements OnInit {
         console.log(this.sfs.isConnected());
     }
     sendGameRoomRequest() {
+        console.log("game room request")
         var object: any = {}
         object.rg = "g2";
         function randomString(length, chars) {
@@ -139,68 +130,78 @@ export class SfsService implements OnInit {
             for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
             return result;
         }
-        object.rn = randomString(10, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');
-        this.sfs.addEventListener(SFS2X.SFSEvent.EXTENSION_RESPONSE, onExtensionResponse, window);
+        object.rn = randomString(10, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ');//room name sent to server
 
         this.sfs.send(new SFS2X.Requests.System.ExtensionRequest("g", object));
 
         // Send two integers to the Zone extension and get their sum in return
 
-        function onExtensionResponse(evtParams) {
-            if (evtParams.cmd == "g") {
-                var responseParams = evtParams.params;
-
-                // We expect a number called "sum"
-                console.log(responseParams);
-            }
-        }
-
 
     }
     onRoomJoined(evtParams) {
-            console.log("Room joined successfully: " + evtParams.room);
-            this.roomId = evtParams.room
-            // call question data here
-        }
-    sendReady(evtParams:any) {
-        var room = evtParams.room;
+        console.log("Room joined successfully: " + evtParams.room);//called when room joined
+        console.log(evtParams)
+        this.RoomJoinedEvent.next(evtParams)
+    }
+    onUserCountChange(evtParams, self = this) {
+            var room = evtParams.room;
             var uCount = evtParams.uCount;
             var sCount = evtParams.sCount;
             if (uCount == 2) {
                 //call ready request
-                let obj = {
-                    REMATCH:null
-                }
-                this.sfs.send(new SFS2X.Requests.System.ExtensionRequest("r",obj,this.roomId));
-                console.log("paHUCH GAYA CHUTYA ")
-                
+            this.UserCountChangedEvent.next(uCount)
             }
-            console.log("Room: " + room.name + " now contains " + uCount + " users and " + sCount + " spectators");
-        
+            
+            console.log("Room: " + room.name + " now contains " + uCount + " users and " + sCount + " spectators");    
+       }
+    sendReady(evtParams: any) {
+        var room = evtParams.room;
+        var uCount = evtParams.uCount;
+        var sCount = evtParams.sCount;
+        if (uCount == 2) {
+            //call ready request
+            let obj = {
+                REMATCH: null
+            }
+            this.sfs.send(new SFS2X.Requests.System.ExtensionRequest("r", obj, this.roomId));
+            console.log("paHUCH GAYA CHUTYA ")
+
+        }
+        console.log("Room: " + room.name + " now contains " + uCount + " users and " + sCount + " spectators");
+
     }
     sendReady2() {
-                //call ready request
-                let obj = {
-                    REMATCH:''
-                }
-                this.sfs.send(new SFS2X.Requests.System.ExtensionRequest("r",obj,this.roomId));
-                console.log("paHUCH GAYA CHUTYA ")
-                
-            
-            //console.log("Room: " + room.name + " now contains " + uCount + " users and " + sCount + " spectators");
-        
+        //call ready request
+        let obj = {
+            REMATCH: ''
+        }
+        this.sfs.send(new SFS2X.Requests.System.ExtensionRequest("r", obj, this.roomId));
+        console.log("paHUCH GAYA CHUTYA ")
+
+
+        //console.log("Room: " + room.name + " now contains " + uCount + " users and " + sCount + " spectators");
+
     }
     connectSmartFox() {
+        console.log("called connect smartfox")
         if (!this.sfs.isConnected())
             this.sfs.connect();
+
+
+
     }
-    loginSmartFox() {
+    loginSmartFox(username: string) {
         if (!this.sfs.isConnected()) {
             this.sfs.connect();
-            setTimeout(this.loginSmartFox(),2000)
+            setTimeout(this.loginSmartFox(username), 2000)
         } else {
-            this.sfs.send(new SFS2X.Requests.System.LoginRequest("nikhil", "", null, "SportsUnity"));
+            this.sfs.send(new SFS2X.Requests.System.LoginRequest(username, "", null, "SportsUnity"));
         }
-
+        return new Promise<void>((resolve, reject) => {
+            if (this.sfs.isConnected())
+                resolve();
+            else
+                reject()
+        })
     }
 }

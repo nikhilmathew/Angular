@@ -1,22 +1,25 @@
-import { SfsService } from './../sfs.service';
-import { Component, OnInit, } from '@angular/core';
-import { DataService } from "app/data.service";
-import { Subscription } from "rxjs/Subscription";
+import { Subscription } from 'rxjs/Subscription';
+import { DataService } from 'app/data.service';
+import { Component, OnInit } from '@angular/core';
+import { SfsService } from "app/sfs.service";
 import { TimerObservable } from "rxjs/observable/TimerObservable";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
-  selector: 'app-game2',
-  templateUrl: './game2.component.html',
-  styleUrls: ['./game2.component.css']
+  selector: 'app-game',
+  templateUrl: './game.component.html',
+  styleUrls: ['./game.component.css']
 })
-export class Game2Component implements OnInit {
-  username:string = "nikhil"
-  showCommentary:any= ["show-c"]
+export class GameComponent implements OnInit {
+    userCountChangeSubscription: any;
+  username: string = this.route.snapshot.params['username']
+  showCommentary: any = ["show-c"]
   game_type: string = "b"
   round_type: string //batting or bowling
   private match_time: number = 10
   timer: any;
   obj: any;
+
   scoring_rules: any = {
     six: 0,
     four: 0,
@@ -44,10 +47,37 @@ export class Game2Component implements OnInit {
   current_bot_response: any;
   halfpointreached: boolean = false;
   usergavecorrectanswer = false;
+  paramsSubscription: Subscription;
+  roomJoinedSubscription: Subscription;
 
-  constructor(private ds: DataService,private sfsService:SfsService) { }
+  constructor(private route: ActivatedRoute, private ds: DataService, private sfsService: SfsService) { }
 
   ngOnInit() {
+
+    this.timer = TimerObservable.create(1, 1000)
+    this.sfsService.connectSmartFox()
+
+  }
+  initiateGameFlow() {
+    // this.showAQuestion();///////////////////////////////////////////////////////////////
+    console.log(this.username)
+    this.sfsService.connectSmartFox();
+    this.sfsService.loginSmartFox(this.username).then(() => {
+      this.sfsService.sendGameRoomRequest()
+    })
+    this.roomJoinedSubscription = this.sfsService.RoomJoinedEvent.subscribe((evtParams) => {
+        console.log("caught room joined event")
+        console.log(evtParams)
+    })
+    this.userCountChangeSubscription = this.sfsService.UserCountChangedEvent.subscribe((evtParams) => {
+        console.log("User count change event")
+        console.log(evtParams)
+    })
+    //this.showAQuestion()
+    // need to call room req here    
+  }
+
+  fetchQuestions() {
     this.ds.getQuizData().subscribe((data) => {
       console.log(data)
       this.obj = data.questions;
@@ -62,10 +92,7 @@ export class Game2Component implements OnInit {
           this.scoring_rules.two = rule.time_allowed
       });
       console.log(this.scoring_rules)
-      this.timer = TimerObservable.create(1, 1000)
     })
-    this.sfsService.connectSmartFox();
-
   }
   startTimer() {
     this.subscription = this.timer.subscribe(t => {
@@ -84,7 +111,7 @@ export class Game2Component implements OnInit {
   }
 
   showAQuestion() {
-    
+
     //this.sfsService.loginSmartFox();
     if (this.subscription)
       this.subscription.unsubscribe()
@@ -134,7 +161,7 @@ export class Game2Component implements OnInit {
     setTimeout(() => {
       console.log(this.current_bot_response)
       this.botanswered = true;
-      console.log(this.currentquestion+" bot gives " + this.current_bot_response.answer + " answer")
+      console.log(this.currentquestion + " bot gives " + this.current_bot_response.answer + " answer")
       if (this.botanswered && this.answerclicked) {
         this.scoreCalculate(this.currentQuestionClickTime - this.questionStartTime, this.current_bot_response.time)
         setTimeout(() => {
@@ -149,7 +176,7 @@ export class Game2Component implements OnInit {
     this.currentQuestionClickTime = performance.now()
     console.log(answer)
     if (answer == this.singleobj.correct_answer) {
-      console.log(this.currentquestion+" user clicked correct answer")
+      console.log(this.currentquestion + " user clicked correct answer")
       this.usergavecorrectanswer = true;
     }
     if (this.botanswered && this.answerclicked) {
@@ -166,7 +193,7 @@ export class Game2Component implements OnInit {
     if (timePlayer < timeOpponent && this.usergavecorrectanswer) {
       console.log("player answered first by " + (timeOpponent - timePlayer) + " ms")
       console.log(timePlayer)
-      console.log(this.currentquestion+" user gave correct answer")
+      console.log(this.currentquestion + " user gave correct answer")
       if (timePlayer < this.scoring_rules.six)
         console.log("player hit a six")
       else if (timePlayer < this.scoring_rules.four)
@@ -177,9 +204,9 @@ export class Game2Component implements OnInit {
         console.log("1 run only")
       }
     } else if (!this.usergavecorrectanswer && this.current_bot_response.answer) {
-      console.log(this.currentquestion+ " opponent answered correctly and first by " + (timePlayer - timeOpponent) + " ms")
+      console.log(this.currentquestion + " opponent answered correctly and first by " + (timePlayer - timeOpponent) + " ms")
     } else {
-      console.log(this.currentquestion+" no one gave correct answer")
+      console.log(this.currentquestion + " no one gave correct answer")
     }
   }
 }
