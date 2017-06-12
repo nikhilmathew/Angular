@@ -16,7 +16,7 @@ export class SfsService implements OnInit {
 
     initializeSmartFoxConnection() {
         let config: any = {}
-        config.host = "192.168.0.11";
+        config.host = "localhost"//"192.168.0.11";
         config.port = 8888;
         config.useSSL = false;
         config.zone = "SportsUnity";
@@ -33,8 +33,8 @@ export class SfsService implements OnInit {
         this.sfs.addEventListener(SFS2X.SFSEvent.CONNECTION_LOST, onConnectionLost, window);
         this.sfs.addEventListener(SFS2X.SFSEvent.LOGIN, onLogin, this);
         this.sfs.addEventListener(SFS2X.SFSEvent.LOGIN_ERROR, onLoginError, this);
-        this.sfs.addEventListener(SFS2X.SFSEvent.EXTENSION_RESPONSE, onExtensionResponse, this);
-        this.sfs.addEventListener(SFS2X.SFSEvent.ROOM_ADD, onRoomCreated, this);
+        this.sfs.addEventListener(SFS2X.SFSEvent.EXTENSION_RESPONSE, this.onExtensionResponse, this);
+        this.sfs.addEventListener(SFS2X.SFSEvent.ROOM_ADD, this.onRoomCreated, this);
         this.sfs.addEventListener(SFS2X.SFSEvent.ROOM_CREATION_ERROR, onRoomCreationError, this);
         this.sfs.addEventListener(SFS2X.SFSEvent.ROOM_JOIN, this.onRoomJoined, this);
         this.sfs.addEventListener(SFS2X.SFSEvent.ROOM_JOIN_ERROR, onRoomJoinError, this);
@@ -68,16 +68,11 @@ export class SfsService implements OnInit {
         function onLoginError(evtParams) {
             console.log("Login failure: " + evtParams.errorMessage);
         }
-        function onExtensionResponse(evtParams) {
-            console.log("mera req event" + evtParams);
-        }
+
         function onLogin(evtParams) {
             console.log("Login successful!");
         }
-        function onRoomCreated(evtParams) {
-            console.log("Room created: " + evtParams.room);// called when room is created on game req
-            console.log(evtParams)
-        }
+
 
         function onRoomCreationError(evtParams) {
             console.log("Room creation failure: " + evtParams.errorMessage);
@@ -138,22 +133,30 @@ export class SfsService implements OnInit {
 
 
     }
+    onRoomCreated(evtParams) {
+        console.log("Room created: " + evtParams.room);// called when room is created on game req
+        console.log(evtParams)
+        this.RoomJoinedEvent.next(evtParams.room.name)
+    }
     onRoomJoined(evtParams) {
         console.log("Room joined successfully: " + evtParams.room);//called when room joined
         console.log(evtParams)
-        this.RoomJoinedEvent.next(evtParams)
+        this.RoomJoinedEvent.next(evtParams.room.name)
     }
     onUserCountChange(evtParams, self = this) {
-            var room = evtParams.room;
-            var uCount = evtParams.uCount;
-            var sCount = evtParams.sCount;
-            if (uCount == 2) {
-                //call ready request
-            this.UserCountChangedEvent.next(uCount)
-            }
-            
-            console.log("Room: " + room.name + " now contains " + uCount + " users and " + sCount + " spectators");    
-       }
+        var room = evtParams.room;
+        var uCount = evtParams.uCount;
+        var sCount = evtParams.sCount;
+        if (uCount == 2) {
+            //call ready request
+            this.UserCountChangedEvent.next(evtParams)
+        }
+
+        console.log("Room: " + room.name + " now contains " + uCount + " users and " + sCount + " spectators");
+    }
+    onExtensionResponse(evtParams) {
+        console.log("mera req event" + evtParams);
+    }
     sendReady(evtParams: any) {
         var room = evtParams.room;
         var uCount = evtParams.uCount;
@@ -192,7 +195,7 @@ export class SfsService implements OnInit {
     }
     loginSmartFox(username: string) {
         if (!this.sfs.isConnected()) {
-            this.sfs.connect();
+            this.connectSmartFox();
             setTimeout(this.loginSmartFox(username), 2000)
         } else {
             this.sfs.send(new SFS2X.Requests.System.LoginRequest(username, "", null, "SportsUnity"));

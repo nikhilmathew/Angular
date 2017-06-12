@@ -7,9 +7,9 @@ export class DataService {
 constructor(private http:Http){
 
 }
-    getQuizData() {
+    getQuizData(key) {
         var data:any
-        return this.http.get('http://54.169.217.88/questions/fetch/?unique_key=1')
+        return this.http.get(`http://54.169.217.88/questions/fetch/?unique_key=${key}`)
         .map((response:Response)=>{
             //console.log(response)
                 let data= response.json();

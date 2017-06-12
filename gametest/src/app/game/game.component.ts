@@ -11,7 +11,8 @@ import { ActivatedRoute } from "@angular/router";
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit {
-    userCountChangeSubscription: any;
+  roomID:string=''
+  userCountChangeSubscription: any;
   username: string = this.route.snapshot.params['username']
   showCommentary: any = ["show-c"]
   game_type: string = "b"
@@ -56,29 +57,37 @@ export class GameComponent implements OnInit {
 
     this.timer = TimerObservable.create(1, 1000)
     this.sfsService.connectSmartFox()
+    this.roomJoinedSubscription = this.sfsService.RoomJoinedEvent.subscribe((roomName) => {
+      console.log("caught room joined event and now loading questions")
+      console.log(roomName)
+      if(this.roomID!=roomName){
+      this.fetchQuestions(roomName)
+      this.roomID=roomName  
+    }
+    })
+    this.userCountChangeSubscription = this.sfsService.UserCountChangedEvent.subscribe((evtParams) => {
+      console.log("User count change event caught in component")
+      console.log(evtParams)
+      if(evtParams.uCount ==2){
+       // 2 players have joined send match start call
+      }
 
+    })
   }
   initiateGameFlow() {
     // this.showAQuestion();///////////////////////////////////////////////////////////////
     console.log(this.username)
-    this.sfsService.connectSmartFox();
+    //this.sfsService.connectSmartFox();
     this.sfsService.loginSmartFox(this.username).then(() => {
       this.sfsService.sendGameRoomRequest()
     })
-    this.roomJoinedSubscription = this.sfsService.RoomJoinedEvent.subscribe((evtParams) => {
-        console.log("caught room joined event")
-        console.log(evtParams)
-    })
-    this.userCountChangeSubscription = this.sfsService.UserCountChangedEvent.subscribe((evtParams) => {
-        console.log("User count change event")
-        console.log(evtParams)
-    })
+
     //this.showAQuestion()
     // need to call room req here    
   }
 
-  fetchQuestions() {
-    this.ds.getQuizData().subscribe((data) => {
+  fetchQuestions(key) {
+    this.ds.getQuizData(key).subscribe((data) => {
       console.log(data)
       this.obj = data.questions;
       this.bot_responses = data.bot_responses

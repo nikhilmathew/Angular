@@ -17,6 +17,7 @@ export class Game2Component implements OnInit {
   private match_time: number = 10
   timer: any;
   obj: any;
+  roomname:string
   scoring_rules: any = {
     six: 0,
     four: 0,
@@ -48,7 +49,7 @@ export class Game2Component implements OnInit {
   constructor(private ds: DataService,private sfsService:SfsService) { }
 
   ngOnInit() {
-    this.ds.getQuizData().subscribe((data) => {
+    this.ds.getQuizData(this.roomname).subscribe((data) => {
       console.log(data)
       this.obj = data.questions;
       this.bot_responses = data.bot_responses
