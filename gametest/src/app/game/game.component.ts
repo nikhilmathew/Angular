@@ -11,7 +11,7 @@ import { ActivatedRoute } from "@angular/router";
   styleUrls: ['./game.component.css']
 })
 export class GameComponent implements OnInit {
-  roomID:string=''
+  roomID: string = ''
   userCountChangeSubscription: any;
   username: string = this.route.snapshot.params['username']
   showCommentary: any = ["show-c"]
@@ -20,7 +20,6 @@ export class GameComponent implements OnInit {
   private match_time: number = 10
   timer: any;
   obj: any;
-
   scoring_rules: any = {
     six: 0,
     four: 0,
@@ -29,10 +28,9 @@ export class GameComponent implements OnInit {
   }
   time: number;
   private subscription: Subscription;
-
   answerclicked: boolean = false;//for each user ans
   botanswered: boolean = false;
-
+  opponentanswered: boolean = false;
   currentquestion: number = 0;
   maxquestion: number = 12;
   currentQuestionClickTime: any;
@@ -50,6 +48,7 @@ export class GameComponent implements OnInit {
   usergavecorrectanswer = false;
   paramsSubscription: Subscription;
   roomJoinedSubscription: Subscription;
+  gameStartSubscription: Subscription;
 
   constructor(private route: ActivatedRoute, private ds: DataService, private sfsService: SfsService) { }
 
@@ -60,32 +59,42 @@ export class GameComponent implements OnInit {
     this.roomJoinedSubscription = this.sfsService.RoomJoinedEvent.subscribe((roomName) => {
       console.log("caught room joined event and now loading questions")
       console.log(roomName)
-      if(this.roomID!=roomName){
-      this.fetchQuestions(roomName)
-      this.roomID=roomName  
-    }
+      if (this.roomID != roomName) {
+        this.fetchQuestions(roomName)
+        this.roomID = roomName
+      }
     })
     this.userCountChangeSubscription = this.sfsService.UserCountChangedEvent.subscribe((evtParams) => {
       console.log("User count change event caught in component")
       console.log(evtParams)
-      if(evtParams.uCount ==2){
-       // 2 players have joined send match start call
+      if (evtParams.uCount == 2) {
+        this.game_type = "p"
+        // 2 players have joined send match start call
+        this.sfsService.sendReady(evtParams);
       }
 
     })
+    this.gameStartSubscription = this.sfsService.GameStartEvent.subscribe((evt) => {
+      console.log(evt)
+      console.log("game has started")
+      // start game flow 
+      this.showAQuestion()
+    })
   }
-  initiateGameFlow() {
+  initiateGameFlow() { //connect, login, gameroom req
     // this.showAQuestion();///////////////////////////////////////////////////////////////
     console.log(this.username)
     //this.sfsService.connectSmartFox();
     this.sfsService.loginSmartFox(this.username).then(() => {
-      this.sfsService.sendGameRoomRequest()
+      setTimeout(() => { this.sfsService.sendGameRoomRequest() }, 2000)
     })
 
     //this.showAQuestion()
     // need to call room req here    
   }
-
+  fireAReady() {
+    this.sfsService.sendReady2();
+  }
   fetchQuestions(key) {
     this.ds.getQuizData(key).subscribe((data) => {
       console.log(data)
@@ -108,7 +117,10 @@ export class GameComponent implements OnInit {
       if (t > this.match_time) {
         this.subscription.unsubscribe()
         console.log("time's Up .. next question coming up")
-        this.scoreCalculate(15000, this.current_bot_response.time)
+        if (this.game_type == 'b')
+          this.scoreCalculate(15000, this.current_bot_response.time)
+          else
+          {}
         setTimeout(() => {
           this.showAQuestion()
         }, 1000)
@@ -128,6 +140,7 @@ export class GameComponent implements OnInit {
     this.questionStartTime = performance.now();
     this.botanswered = false;
     this.answerclicked = false;
+    this.opponentanswered = false;
     this.usergavecorrectanswer = false;
 
     if (this.currentquestion < this.obj.length / 2) {// diverge from here for batting and bowling
@@ -180,17 +193,20 @@ export class GameComponent implements OnInit {
     }, this.current_bot_response.time)
   }
 
-  selectAnswer(answer) {
+  selectAnswer(answer) {// runs when an answer is clicked
     this.answerclicked = true;
-    this.currentQuestionClickTime = performance.now()
+    this.currentQuestionClickTime = Math.round(performance.now() - this.questionStartTime)
+
     console.log(answer)
     if (answer == this.singleobj.correct_answer) {
       console.log(this.currentquestion + " user clicked correct answer")
       this.usergavecorrectanswer = true;
     }
-    if (this.botanswered && this.answerclicked) {
+    if (this.game_type == 'p') {
+      this.sfsService.sendQA(this.currentquestion, answer, this.currentQuestionClickTime)
+    } else if (this.game_type == 'b' && this.botanswered && this.answerclicked) {// for bots
       //this.subscription.unsubscribe()
-      this.scoreCalculate(this.currentQuestionClickTime - this.questionStartTime, this.current_bot_response.time);
+      this.scoreCalculate(this.currentQuestionClickTime, this.current_bot_response.time);
       setTimeout(() => {
         this.showAQuestion()
       }, 1000);

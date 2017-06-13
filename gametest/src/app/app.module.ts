@@ -9,17 +9,22 @@ import { AppComponent } from './app.component';
 import { Game2Component } from './game2/game2.component';
 import { GameComponent } from './game/game.component';
 import { HomeComponent } from './home/home.component';
+import { Game3Component } from './game3/game3.component';
+import { CommentaryComponent } from './commentary/commentary.component';
 
 const appRoutes: Routes = [
   { path: '', component: HomeComponent },
-  { path: 'game/:username', component: GameComponent },
+  { path: 'game/:username', component: Game3Component },
+  { path: 'com', component:CommentaryComponent}
 ]
 @NgModule({
   declarations: [
     AppComponent,
     Game2Component,
     GameComponent,
-    HomeComponent
+    HomeComponent,
+    Game3Component,
+    CommentaryComponent
   ],
   imports: [
     BrowserModule,

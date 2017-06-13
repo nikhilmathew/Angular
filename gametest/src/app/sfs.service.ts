@@ -8,6 +8,7 @@ export class SfsService implements OnInit {
     sfs: any;
     RoomJoinedEvent = new Subject<any>();
     UserCountChangedEvent = new Subject<any>();
+    GameStartEvent = new Subject<any>();
     ngOnInit() {
         //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
         //Add 'implements OnInit' to the class.
@@ -16,11 +17,11 @@ export class SfsService implements OnInit {
 
     initializeSmartFoxConnection() {
         let config: any = {}
-        config.host = "localhost"//"192.168.0.11";
+        config.host = "192.168.0.11";
         config.port = 8888;
         config.useSSL = false;
         config.zone = "SportsUnity";
-        config.debug = true;
+        config.debug = false;
 
         this.sfs = new SFS2X.SmartFox(config);
         this.initializeEventListeners();
@@ -32,8 +33,8 @@ export class SfsService implements OnInit {
         this.sfs.addEventListener(SFS2X.SFSEvent.CONNECTION, onConnection, window);
         this.sfs.addEventListener(SFS2X.SFSEvent.CONNECTION_LOST, onConnectionLost, window);
         this.sfs.addEventListener(SFS2X.SFSEvent.LOGIN, onLogin, this);
-        this.sfs.addEventListener(SFS2X.SFSEvent.LOGIN_ERROR, onLoginError, this);
-        this.sfs.addEventListener(SFS2X.SFSEvent.EXTENSION_RESPONSE, this.onExtensionResponse, this);
+        this.sfs.addEventListener(SFS2X.SFSEvent.LOGIN_ERROR, onLoginError,this);
+        this.sfs.addEventListener(SFS2X.SFSEvent.EXTENSION_RESPONSE, this.onExtensionResponse,this);
         this.sfs.addEventListener(SFS2X.SFSEvent.ROOM_ADD, this.onRoomCreated, this);
         this.sfs.addEventListener(SFS2X.SFSEvent.ROOM_CREATION_ERROR, onRoomCreationError, this);
         this.sfs.addEventListener(SFS2X.SFSEvent.ROOM_JOIN, this.onRoomJoined, this);
@@ -141,6 +142,7 @@ export class SfsService implements OnInit {
     onRoomJoined(evtParams) {
         console.log("Room joined successfully: " + evtParams.room);//called when room joined
         console.log(evtParams)
+        this.roomId = evtParams.room
         this.RoomJoinedEvent.next(evtParams.room.name)
     }
     onUserCountChange(evtParams, self = this) {
@@ -154,8 +156,10 @@ export class SfsService implements OnInit {
 
         console.log("Room: " + room.name + " now contains " + uCount + " users and " + sCount + " spectators");
     }
-    onExtensionResponse(evtParams) {
-        console.log("mera req event" + evtParams);
+    onExtensionResponse(evtParams) {// send a subject back to component
+        console.log(evtParams);
+        this.GameStartEvent.next(evtParams)
+
     }
     sendReady(evtParams: any) {
         var room = evtParams.room;
@@ -167,7 +171,7 @@ export class SfsService implements OnInit {
                 REMATCH: null
             }
             this.sfs.send(new SFS2X.Requests.System.ExtensionRequest("r", obj, this.roomId));
-            console.log("paHUCH GAYA CHUTYA ")
+            console.log("sending the first ready to check if both users are ready, this is not to start showing questions")
 
         }
         console.log("Room: " + room.name + " now contains " + uCount + " users and " + sCount + " spectators");
@@ -179,24 +183,36 @@ export class SfsService implements OnInit {
             REMATCH: ''
         }
         this.sfs.send(new SFS2X.Requests.System.ExtensionRequest("r", obj, this.roomId));
-        console.log("paHUCH GAYA CHUTYA ")
+        console.log("paHUCH GAYA CHUTYA ",this.roomId)
 
 
         //console.log("Room: " + room.name + " now contains " + uCount + " users and " + sCount + " spectators");
 
     }
+    sendQA(questionno:number,option:string="no_answer",time:number=14000) {
+                //call ready request
+                let obj = {
+                    qn:questionno ,
+                    ao:option,
+                    d:time
+                }
+                this.sfs.send(new SFS2X.Requests.System.ExtensionRequest("q",obj,this.roomId));
+                console.log("qa request")
+                
+            
+            //console.log("Room: " + room.name + " now contains " + uCount + " users and " + sCount + " spectators");
+        
+    }
     connectSmartFox() {
         console.log("called connect smartfox")
         if (!this.sfs.isConnected())
             this.sfs.connect();
-
-
-
     }
+
     loginSmartFox(username: string) {
         if (!this.sfs.isConnected()) {
             this.connectSmartFox();
-            setTimeout(this.loginSmartFox(username), 2000)
+            setTimeout(()=>{this.loginSmartFox(username)}, 2000)
         } else {
             this.sfs.send(new SFS2X.Requests.System.LoginRequest(username, "", null, "SportsUnity"));
         }
